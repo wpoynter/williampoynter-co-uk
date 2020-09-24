@@ -1,0 +1,37 @@
+[
+  {
+      "grouping":"Architecture",
+      "skills":["GraphQL/Gateways","Serverless","Microservices","RESTful APIs","SaaS/PaaS/IaaS","CQRS","Autoscaling"]
+  },{
+      "grouping":"Languages",
+      "skills":[ "Java","Ruby","bash",{"name":"C++", "icon":"cplusplus"},{"name":"C#", "icon":"csharp"},"javascript","Go","SQL"]
+  },{
+    "grouping":"Tools",
+    "skills":["git","Terraform","Hashicorp Vault","Circle.CI", "Jenkins", "GitHub", "New Relic"]
+  },
+  {
+      "grouping":"Platform Development & Administration",
+      "skills":[ "Istio","Kong","NGINX","Wordpress", "Hugo"]
+  },
+  {
+      "grouping":"Data Management",
+      "skills":[
+        "MySQL",
+        "Postgresql",
+        "Redis",
+        {"name":"Elasticseach"},
+        {"name":"S3"},
+        {"name":"Kafka", "icon": "apache"}
+      ]
+  },
+  {
+    "grouping":"Containers & Cloud",
+      "skills":[
+          {"name":"Kubernetes","link":"https://kubernetes.io/"},
+          {"name":"Docker","link":"https://docker.com", "icon":"docker"},
+          {"name":"AWS","link":"https://aws.amazon.com", "icon":"aws"},
+          {"name":"Google Cloud","link":"https://cloud.google.com", "icon":"google-cloud-platform"},
+          {"name":"Heroku","link":"https://www.heroku.com/", "icon": "heroku"}
+      ]
+  }
+]

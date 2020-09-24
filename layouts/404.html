@@ -1,0 +1,18 @@
+{{ define "main"}}
+    <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
+      <div class="my-auto">
+        <div class="resume-item d-flex flex-column flex-md-row">
+          <div class="mr-auto">
+            <h1 class="mb-0">{{ .Site.Params.firstName }}
+              <span class="text-primary">{{ .Site.Params.lastName }}</span>
+            </h1>
+          </div>
+        </div>
+        <div class="resume-item d-flex flex-column flex-md-row">
+          <div class="mr-auto mt-4">
+            <h2 class="mb-0"><span class="text-primary">Not Found</span>&nbsp;&#x1f61e;</h2>
+          </div>
+        </div>
+      </div>
+    </section>
+{{ end }}

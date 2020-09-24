@@ -1,0 +1,45 @@
+[
+    {
+        "role":"Director of Engineering",
+        "company":"Babylon Health",
+        "summary":"Providing leadership, guidance and architecutal oversight for the Platform: Foundation tribe (formally Membership & Enterprise). Responsible for cross-cutting domains such as: \n- IAM\n - Multi-Tenancy\n - Membership Management\n - Consent Management\n - Feature Control\n - Profile Management & Search\n -  Data Subject Tooling.\n\nThe tribe was also home to the infamous CBS squad, which provided deep knowledge and caretaker responibilies for some of Babylon's lognest running systems.\n\n At its peak, Platform: Foundation consisted of more than 70 people with 55 of them being engineers.",
+        "range":"Feb 2019 - Present"
+    },
+    {
+        "role":"Squad Lead",
+        "company":"Babylon Health",
+        "summary":"Shortly after becoming the squad lead of the Consumer & Business squad, the product manager and I reinvented the squad as CBS (Core Business Services). This clarified the remit and gave the squad a new identity. Overtime we grew the squad from 5 people to 25. After which we reorganised the area to create several spin-off squads making CBS a more manageable size. CBS, the spin-off squads and one other then formed one of the first platform tribes, Membership & Enterprise, which I then led.\n\n Overtime CBS was reponsible for an incredibly wideranging area, that would later form the majority of the Babylon Platform.",
+        "range":"May 2018 - Feb 2019"
+    },
+    {
+        "role":"Senior Engineer",
+        "company":"Babylon Health",
+        "summary":"Based within Babylon's \"Core Team\", working predominantly on the backend in Ruby, I tended to focus on complex system and cross-cutting concerns. Working on federated authentication with Babylon's partners, replacing Babylon's non-global ready integer ID system and preparing legacy systems for the arrival of GDPR.",
+        "range":"Jan 2018 - May 2018"
+    },
+    {
+        "role":"Technical Manager",
+        "company":"CLOSER, University College London",
+        "summary":"CLOSER is a consortium of some of the UK's biggest and longest running longitudinal studies focusing on infrastructure and impact. Part of this work included the development of CLOSER Discovery, a search engine to publish documententation about the longitudinal studies and their datasets.\n\nAs the Technical Manager, I was reponsbile for the engineering decisions, technical consultancy and inter-group technical liason. My responsibilities included chairing the Technical Oversight Committee four times a year and being lead engineer for the search engine and all metadata tooling.",
+        "range":"Jan 2016 - Dec 2017"
+    },
+    {
+        "role":"Metadata Officer",
+        "company":"CLOSER, University College London",
+        "summary":"As Metadata Officer for CLOSER, I was responsible for managing the team of Metadata Assistants who were doing the restrospective work to enhance the studies' documentation. This included setting the docuemtnation standards and procedures to ensure high quality documentation.",
+        "range":"Feb 2014 - Jan 2016"
+    },
+    {
+        "role":"Chief Technology Officer",
+        "company":"Research Through Gaming",
+        "summary":"Research Through Gaming is a start-up market research boutique delivering a very specialised product. We created computer games for the purpose of collecting market research. As CTO, I was the lead architect for all games and therefore would have to work closely with the client and the external development teams as well as our hosting organisations. All of our project collected personal information so ensuring the Data Protection Act was followed and informed consent was carried out were key responsibilities of mine.",
+        "range":"Jul 2013 - Jan 2014"
+    }
+    ,
+    {
+        "role":"Database Developer",
+        "company":"Research Through Gaming",
+        "summary":"In order to collect the data of such custom and unique surveys, RTG required a bespoke data collection tool that would allow for radid survey design and data curation. I was the lead engineer developing the database and tooling using PHP and MySQL.",
+        "range":"May 2012 - Jul 2013"
+    }
+]

@@ -1,0 +1,28 @@
+[
+    {
+        "school":"The University of Manchester",
+        "degree":"Master of Science",
+        "major":"Particle Physics (Merit)",
+        "notes":"[Measurement of the Double Beta Decay Half-life of Nd-150 with the NEMO-3 Experiment](/docs/Measurement%20of%20the%20Double%20Beta%20Decay%20Half-life%20of%20Nd-150.pdf)",
+        "range":"2011 - 2012"
+    },
+    {
+        "school":"The University of Manchester",
+        "degree":"Bachelor of Science",
+        "major":"Physics (2:1)",
+        "notes":"[A Tuning Device for a Musical Instrument](/docs/A%20Tuning%20Device%20for%20a%20Musical%20Instrument.pdf)",
+        "range":"2008 - 2011"
+    },
+    {
+        "school":"Bilborough College",
+        "degree":"A-Level",
+        "major":"- Maths (A)\n - Physics (A)\n - Electronics (A)\n - General Studies (A)",
+        "range":"2006 - 2008"
+    },
+    {
+        "school":"The Gedling School",
+        "degree":"GCSE",
+        "major":"- Double Science\n - Maths\n - English Literature\n - English Language\n - Religious Studies\n - Design & Technology",
+        "range":"2001 - 2006"
+    }
+]

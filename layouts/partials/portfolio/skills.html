@@ -1,0 +1,34 @@
+<section class="resume-section p-3 p-lg-5 d-flex flex-column" id="skills">
+  <div class="my-auto" id="skills-content">
+    <h2 class="mb-5">Skills</h2>
+    {{ range $.Site.Data.skills }}
+        <div class="subheading mb-3 skills-heading">{{ .grouping }}</div>
+            <ul>
+            {{ range .skills }}
+                {{ $icon := "" }}
+                {{ $display_name := "" }}
+                {{ if isset . "name" }} 
+                  {{ $icon = lower .icon }}
+                  {{ $display_name = .name }}
+                {{ else }} 
+                  {{ $icon = lower . }} 
+                  {{ $display_name = . }}
+                {{ end }}
+
+                {{ $icon_classes := "" }}
+                {{ if (in $.Site.Data.devicons $icon) }}
+                    {{ $icon_classes = $icon | printf "%s-%s" "devicons devicons" | printf "%s" }}
+                {{ else if (in $.Site.Data.devicon $icon) }}
+                    {{ $icon_classes = $icon | printf "%s-%s-plain" "devicon devicon" | printf "%s" }}
+                {{ else }}
+                    {{ $icon_classes = "devicons devicons-terminal_badge" }}
+                {{ end }}
+                <li class="list-inline-item">
+                  <i class="{{ $icon_classes }}"></i>
+                  {{ $display_name }}
+                </li>
+            {{ end }}
+            </ul>
+    {{ end }}
+  </div>
+</section>
