@@ -22,6 +22,10 @@ a:hover, a:focus, a:active {
   border-left: 4px solid #117A65;
 }
 
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255,255,255,.7);
+}
+
 .devicon {
   font-size:1.5em;
       vertical-align: sub;
