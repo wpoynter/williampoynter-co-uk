@@ -33,7 +33,7 @@ jobs:
       run: yarn
 
     - name: Run ESLint
-      run: eslint public/
+      run: yarn run eslint public/
       
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
