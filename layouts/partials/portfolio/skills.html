@@ -7,12 +7,12 @@
             {{ range .skills }}
                 {{ $icon := "" }}
                 {{ $display_name := "" }}
-                {{ if isset . "name" }} 
-                  {{ $icon = lower .icon }}
-                  {{ $display_name = .name }}
-                {{ else }} 
+                {{ if eq (printf "%T" .) "string" }} 
                   {{ $icon = lower . }} 
                   {{ $display_name = . }}
+                {{ else }} 
+                  {{ $icon = lower .icon }}
+                  {{ $display_name = .name }}
                 {{ end }}
 
                 {{ $icon_classes := "" }}

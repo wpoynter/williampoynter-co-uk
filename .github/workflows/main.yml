@@ -28,6 +28,12 @@ jobs:
 
     - name: Build
       run: hugo --minify
+
+    - name: Install Node modules
+      run: yarn
+
+    - name: Run ESLint
+      run: eslint public/
       
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master

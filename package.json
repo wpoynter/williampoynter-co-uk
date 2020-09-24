@@ -1,0 +1,23 @@
+{
+  "name": "williampoynter-co-uk",
+  "version": "1.0.0",
+  "description": "Website portfolio and CV of William Poynter",
+  "main": "index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wpoynter/williampoynter-co-uk.git"
+  },
+  "author": "William Poynter <poynter.william@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wpoynter/williampoynter-co-uk/issues"
+  },
+  "homepage": "https://github.com/wpoynter/williampoynter-co-uk#readme"
+}
