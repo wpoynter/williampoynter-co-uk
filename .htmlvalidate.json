@@ -1,0 +1,11 @@
+{
+    "extends": [
+      "htmlvalidate:recommended"
+    ],
+   
+    "rules": {
+      "attr-quotes": "off",
+      "no-raw-characters": "off",
+      "long-title": "off"
+    }
+  }

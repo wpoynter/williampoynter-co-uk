@@ -6,6 +6,7 @@ featured: false
 description: "CLOSER Discovery is a cutting edge search engine for the discovery of metadata on eight of the UK’s cohort and longitudinal studies. The longest running study that is documented in CLOSER Discovery has been running for over 70 years, which creates a formidable problem to document and manage."
 tags: ["Data","Metadata","Research","Longitudinal","ESRA"]
 image: "https://cls.ucl.ac.uk/wp-content/uploads/nf_image/ESRA-SQUARE-p2636ktzajn23g3ko4fm6kys.png"
+alt: "The ESRA conference series logo"
 link: "https://www.europeansurveyresearch.org/conference/programme2017?sess=48#695"
 weight: 800
 sitemap:

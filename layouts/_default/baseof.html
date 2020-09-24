@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>{{ .Site.Title }}</title>
-  <meta property="og:title" content="{{ .Site.Title }} | {{ .Title }}" />
-  <meta property="og:image" content="{{ .Site.Params.profileImageJpeg | absURL }}" />
+  <title>{{ .Site.Title }} | {{ .Title }}</title>
+  <meta property="og:title" content="{{ .Site.Title }} | {{ .Title }}">
+  <meta property="og:image" content="{{ .Site.Params.profileImageJpeg | absURL }}">
   <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{else}}{{ .Description }}{{ end }}">
-  <meta property="og:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{else}}{{ .Description }}{{ end }}" />
+  <meta property="og:description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{else}}{{ .Description }}{{ end }}">
   <meta name="author" content="{{ .Site.Params.firstName }} {{ .Site.Params.lastName }}">
   <link rel="preconnect" href="https://use.fontawesome.com">
   <!-- Bootstrap core CSS -->
@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="{{ "css/tweaks.css" | absURL }}">
   <link rel="preload" href="{{ "css/resume-override.css" | absURL }}" as="style">
   <link rel="stylesheet" href="{{ "css/resume-override.css" | absURL }}">
-  {{ hugo.Generator }}
+
   {{ block "headfiles" . }}
    <!-- pl;aceholder -->
   {{ end }}

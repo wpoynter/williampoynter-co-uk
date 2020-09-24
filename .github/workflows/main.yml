@@ -34,6 +34,9 @@ jobs:
 
     - name: Run ESLint
       run: yarn run eslint public/
+
+    - name: Run HTML Validation
+      run: yarn run html-validate public/
       
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master

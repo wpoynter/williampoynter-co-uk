@@ -56,3 +56,14 @@ a:hover, a:focus, a:active {
   src: url(https://use.fontawesome.com/releases/v5.12.1/webfonts/fa-solid-900.eot?#iefix) format("embedded-opentype"), url(https://use.fontawesome.com/releases/v5.12.1/webfonts/fa-solid-900.woff2) format("woff2"), url(https://use.fontawesome.com/releases/v5.12.1/webfonts/fa-solid-900.woff) format("woff"), url(https://use.fontawesome.com/releases/v5.12.1/webfonts/fa-solid-900.ttf) format("truetype"),
       url(https://use.fontawesome.com/releases/v5.12.1/webfonts/fa-solid-900.svg#fontawesome) format("svg");
 }
+
+.publication-image {
+  max-height: 300px;
+  max-width: 30%;
+  float: right;
+}
+
+.publication-summary-image {
+  max-width:250px;
+  padding:5px;
+}

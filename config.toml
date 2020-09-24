@@ -6,6 +6,7 @@ PygmentsCodeFences = true
 PygmentsCodeFencesGuessSyntax = true
 PygmentsStyle = "monokai"
 enableGitInfo = false
+disableHugoGeneratorInject = true
 
 [params]
 address = "London, UK"
