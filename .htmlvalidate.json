@@ -6,6 +6,7 @@
     "rules": {
       "attr-quotes": "off",
       "no-raw-characters": "off",
-      "long-title": "off"
+      "long-title": "off",
+      "element-permitted-content": "off"
     }
   }

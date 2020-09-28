@@ -8,6 +8,7 @@
                     <span itemprop="name">{{ .school | markdownify }}</span>
                   </h3>
                   <div itemprop="hasCredential" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
+                    <meta itemprop="recognizedBy" content="{{ .school }}">
                     <div class="subheading mb-3" itemprop="educationalLevel">{{ .degree }}</div>
                     <div itemprop="name">{{ .major | markdownify }}</div>
                     {{ .notes | markdownify }}
