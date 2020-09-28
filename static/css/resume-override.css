@@ -35,6 +35,10 @@ a:hover, a:focus, a:active {
       vertical-align: sub;
 }
 
+#qr-code-container img {
+  max-width: 100%;
+}
+
 @media screen and (max-width: 700px) {
   #qr-code-container {
     display: none;
