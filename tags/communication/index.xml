@@ -1,21 +1,2 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Communication on William Poynter</title>
-    <link>https://www.williampoynter.co.uk/tags/communication/</link>
-    <description>Recent content in Communication on William Poynter</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language>
-    <lastBuildDate>Tue, 02 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://www.williampoynter.co.uk/tags/communication/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Big data, what is it and will it be here to stay?</title>
-      <link>https://www.williampoynter.co.uk/publications/bigdata/</link>
-      <pubDate>Tue, 02 May 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://www.williampoynter.co.uk/publications/bigdata/</guid>
-      <description>Although the term “big data” has been in use since the 1990s, it has gained popularity massively over the last 5 years.
-Technological terms come in and out of fashion all of the time, e.g. we still have websites, but we do not call them the ‘World Wide Web’ anymore. We also see terminology evolve over time, e.g. ‘social network’ has been replaced by ‘social media’.</description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Communication on William Poynter</title><link>https://www.williampoynter.co.uk/tags/communication/</link><description>Recent content in Communication on William Poynter</description><generator>Hugo -- gohugo.io</generator><language>en-gb</language><lastBuildDate>Tue, 02 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://www.williampoynter.co.uk/tags/communication/index.xml" rel="self" type="application/rss+xml"/><item><title>Big data, what is it and will it be here to stay?</title><link>https://www.williampoynter.co.uk/publications/bigdata/</link><pubDate>Tue, 02 May 2017 00:00:00 +0000</pubDate><guid>https://www.williampoynter.co.uk/publications/bigdata/</guid><description>Although the term “big data” has been in use since the 1990s, it has gained popularity massively over the last 5 years.
+Technological terms come in and out of fashion all of the time, e.g. we still have websites, but we do not call them the ‘World Wide Web’ anymore. We also see terminology evolve over time, e.g. ‘social network’ has been replaced by ‘social media’.</description></item></channel></rss>
