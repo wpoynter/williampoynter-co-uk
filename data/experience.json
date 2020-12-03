@@ -1,9 +1,15 @@
 [
     {
+        "role":"Chief Technology Officer",
+        "company":"Tinto",
+        "summary":"Tinto is an exciting UK startup helping to connect mums and mums-to-be. We are developing a platform that enables mums to ask each other for advice, ask and expect for advice and search through the Titno library of sage motherhood advice.\n\nAs the CTO of a startup, the responibilities are far ranging from IT services, product delivery, architecture, information governance, security, compliance and staff development.",
+        "range":"Nov 2020 - Present"
+    },
+    {
         "role":"Director of Engineering",
         "company":"Babylon Health",
         "summary":"Providing leadership, guidance and architecutal oversight for the Platform: Foundation tribe (formally Membership & Enterprise). Responsible for cross-cutting domains such as: \n- IAM\n - Multi-Tenancy\n - Membership Management\n - Consent Management\n - Feature Control\n - Profile Management & Search\n -  Data Subject Tooling.\n\nThe tribe was also home to the infamous CBS squad, which provided deep knowledge and caretaker responibilies for some of Babylon's lognest running systems.\n\n At its peak, Platform: Foundation consisted of more than 70 people with 55 of them being engineers.",
-        "range":"Feb 2019 - Present"
+        "range":"Feb 2019 - Nov 2020"
     },
     {
         "role":"Squad Lead",
