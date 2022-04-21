@@ -1,1 +1,22 @@
-["cplusplus", "csharp", "mysql", "postgresql", "apache", "docker", "heroku"]
+[
+    "cplusplus",
+    "csharp",
+    "mysql",
+    "postgresql",
+    "apache",
+    "docker",
+    "heroku",
+    "graphql",
+    "bash",
+    "terraform",
+    "circleci",
+    "hugo",
+    "amazonwebservices",
+    "kubernetes",
+    "rails",
+    "express",
+    "firebase",
+    "jetbrains",
+    "typescript",
+    "nextjs"
+]

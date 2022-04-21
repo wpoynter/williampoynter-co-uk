@@ -1,17 +1,21 @@
 [
   {
       "grouping":"Architecture",
-      "skills":["GraphQL/Gateways","Serverless","Microservices","RESTful APIs","SaaS/PaaS/IaaS","CQRS","Autoscaling"]
+      "skills":[{"name": "GraphQL/Gateways", "icon":"graphql"},"Serverless","Microservices","RESTful APIs","SaaS/PaaS/IaaS","CQRS","Autoscaling"]
   },{
       "grouping":"Languages",
-      "skills":[ "Java","Ruby","bash",{"name":"C++", "icon":"cplusplus"},{"name":"C#", "icon":"csharp"},"javascript","Go","SQL"]
+      "skills":[ "Java","Ruby","bash",{"name":"C++", "icon":"cplusplus"},{"name":"C#", "icon":"csharp"},"javascript","Go","SQL", "TypeScript"]
   },{
     "grouping":"Tools",
-    "skills":["git","Terraform","Hashicorp Vault","Circle.CI", "Jenkins", "GitHub", "New Relic"]
+    "skills":["git","Terraform","Hashicorp Vault",{"name":"Circle.CI", "icon": "circleci"}, "Jenkins", "GitHub", "New Relic", "Jetbrains", "Jira"]
+  },
+  {
+    "grouping":"Frameworks",
+    "skills": ["React", "Rails", "Express", {"name": "Next.JS", "icon": "nextjs"}]
   },
   {
       "grouping":"Platform Development & Administration",
-      "skills":[ "Istio","Kong","NGINX","Wordpress", "Hugo"]
+      "skills":[ "Istio","Kong","NGINX","Wordpress", "Hugo", "Firebase"]
   },
   {
       "grouping":"Data Management",
@@ -20,14 +24,14 @@
         "Postgresql",
         "Redis",
         {"name":"Elasticseach"},
-        {"name":"S3"},
+        {"name":"S3", "icon": "amazonwebservices"},
         {"name":"Kafka", "icon": "apache"}
       ]
   },
   {
     "grouping":"Containers & Cloud",
       "skills":[
-          {"name":"Kubernetes","link":"https://kubernetes.io/"},
+          {"name":"Kubernetes","link":"https://kubernetes.io/", "icon": "kubernetes"},
           {"name":"Docker","link":"https://docker.com", "icon":"docker"},
           {"name":"AWS","link":"https://aws.amazon.com", "icon":"aws"},
           {"name":"Google Cloud","link":"https://cloud.google.com", "icon":"google-cloud-platform"},
