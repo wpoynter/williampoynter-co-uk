@@ -28,9 +28,10 @@
    {{ if .Site.Params.showEducation }}
        {{ partial "portfolio/education.html" . }}
    {{ end }}
-   {{ if .Site.Params.showBlog }}
-      {{ with .Site.GetPage "section" "blog" }}
-         {{ .Scratch.Set "sectionId" "blog" }}
+   {{ if .Site.Params.showTutorials }}
+      {{ with .Site.GetPage "section" "tutorials" }}
+         <h2>Help</h2>
+         {{ .Scratch.Set "sectionId" "tutorials" }}
          {{ partial "sectionSummary" . }}
       {{ end }}
    {{ end }}

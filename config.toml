@@ -21,6 +21,7 @@ showExperience = true
 showOpenSource = false
 showProjects = false
 showPublications = true
+showTutorials = true
 showQr = true
 showSkills = true
 description = "The professional profile of William 'Will' Poynter. Including contact information, work experience, education and past publications."
@@ -42,13 +43,20 @@ name = "GitHub"
 link = "https://www.instagram.com/poynterwilliam/"
 name = "Instagram"
 
-# [[params.handles]]
-# link = "https://stackoverflow.com/users/story/82880"
-# name = "Stack Overflow"
+[[params.handles]]
+link = "https://stackoverflow.com/users/17143487/will-poynter"
+name = "Stack Overflow"
+icon = "stack-overflow"
 
-# [[params.handles]]
-# link = "https://keybase.io/edwardawebb"
-# name = "Keybase"
+[[params.handles]]
+link = "https://keybase.io/willtinto"
+name = "Keybase"
+
+[[params.handles]]
+link  = "https://tintoapp.com/loop/articles/"
+name  = "Tinto"
+icon  = "heart"
+solid = true
 
 [outputs]
 home = ["HTML", "JSON"]
@@ -77,5 +85,5 @@ gzip = false
 
 [[deployment.matchers]]
 pattern = "^.+\\.(html|xml|json)$"
-cacheControl = "max-age=300, no-transform, public"
+cacheControl = "max-age=86400, no-transform, public"
 gzip = true
