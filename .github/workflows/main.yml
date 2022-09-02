@@ -38,8 +38,10 @@ jobs:
     - name: Run HTML Validation
       run: yarn run html-validate public/
       
-    - name: install-aws-cli-action
-      uses: unfor19/install-aws-cli-action@v1.0.3
-        
-    - name: Deploy
-      run: hugo deploy
+    - name: Deploy site
+      uses: plopcas/hugo-s3-action@v1.3.0
+      env:
+        AWS_REGION: 'eu-west-2'
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        MINIFY: 'true'
