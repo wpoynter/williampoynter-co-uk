@@ -70,7 +70,7 @@ order = [".jpg$", ".gif$"]
 [[deployment.targets]]
 # An arbitrary name for this target.
 name = "williampoynter-co-uk"
-URL = "gs://www.williampoynter.co.uk/"
+URL = "s3://williampoynter?region=eu-west-2"
 
 [[deployment.matchers]]
 #  Cache static assets for 1 year.
