@@ -7,6 +7,12 @@
       "attr-quotes": "off",
       "no-raw-characters": "off",
       "long-title": "off",
-      "element-permitted-content": "off"
+      "element-permitted-content": "off",
+      "doctype-style": [
+        "warn",
+        {
+          "style": "lowercase"
+        }
+      ]
     }
   }
