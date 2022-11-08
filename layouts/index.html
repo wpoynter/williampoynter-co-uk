@@ -30,8 +30,7 @@
    {{ end }}
    {{ if .Site.Params.showTutorials }}
       {{ with .Site.GetPage "section" "tutorials" }}
-         <h2>Help</h2>
-         {{ .Scratch.Set "sectionId" "tutorials" }}
+         {{ .Scratch.Set "sectionId" "Tutorials" }}
          {{ partial "sectionSummary" . }}
       {{ end }}
    {{ end }}

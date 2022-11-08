@@ -1,0 +1,12 @@
+
+<div class="resume-item d-flex flex-column flex-md-row mb-5">
+  <div class="tutorial-content mr-auto">
+    <h3 class="mb-0"><a href="{{ .Permalink }}">{{ .Params.title }}</a></h3>
+    <div>{{ .Params.description | safeHTML }}</div>
+    {{ partial "techtags" . }}
+  </div>
+  <div class="resume-date text-md-right">
+    <span class="text-primary">{{ .Params.date | dateFormat "January 2006" }}</span>
+    <img src="{{ .Params.image }}" class="tutorial-summary-image" alt="{{ .Params.alt }}">
+  </div>
+</div>
