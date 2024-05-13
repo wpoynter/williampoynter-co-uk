@@ -1,6 +1,6 @@
 baseURL = "https://williampoynter.co.uk/"
 languageCode = "en-gb"
-title = "William Poynter"
+title = "Will Poynter"
 theme = "resume"
 PygmentsCodeFences = true
 PygmentsCodeFencesGuessSyntax = true
@@ -9,12 +9,11 @@ enableGitInfo = false
 disableHugoGeneratorInject = true
 
 [params]
-address = "London, UK"
-email = "poynter.william@gmail.com"
+address = "Sheffield, UK"
+email = "will@williampoynter.co.uk"
 favicon = "/favicon.ico"
-firstName = "William"
+firstName = "Will"
 lastName = "Poynter"
-phone = "+44 787 510 7860"
 profileImage = "img/williampoynter.jpeg"
 showEducation = true
 showExperience = true
@@ -53,8 +52,8 @@ link = "https://keybase.io/willtinto"
 name = "Keybase"
 
 [[params.handles]]
-link  = "https://tintoapp.com/loop/articles/"
-name  = "Tinto"
+link  = "https://researchwiseai.com/"
+name  = "ResearchWiseAI"
 icon  = "heart"
 solid = true
 
@@ -70,7 +69,7 @@ order = [".jpg$", ".gif$"]
 [[deployment.targets]]
 # An arbitrary name for this target.
 name = "williampoynter-co-uk"
-URL = "s3://williampoynter?region=eu-west-2"
+URL = "s3://williampoynter.co.uk?region=eu-west-2"
 
 [[deployment.matchers]]
 #  Cache static assets for 1 year.
