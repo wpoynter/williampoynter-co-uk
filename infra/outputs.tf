@@ -23,15 +23,15 @@ output "s3_redirect_endpoint" {
   description = "S3 www redirect endpoint"
 }
 
-output "cf_website_endpoint" {
-  value       = aws_cloudfront_distribution.site.domain_name
-  description = "CloudFront website endpoint"
-}
+# output "cf_website_endpoint" {
+#   value       = aws_cloudfront_distribution.site.domain_name
+#   description = "CloudFront website endpoint"
+# }
 
-output "cf_distribution_id" {
-  value       = aws_cloudfront_distribution.site.id
-  description = "CloudFront distribution ID"
-}
+# output "cf_distribution_id" {
+#   value       = aws_cloudfront_distribution.site.id
+#   description = "CloudFront distribution ID"
+# }
 
 # output "iam_publish_access_key" {
 #   value       = aws_iam_access_key.publish.id

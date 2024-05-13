@@ -2,28 +2,31 @@ resource "aws_route53_zone" "primary" {
   name = "williampoynter.co.uk"
 }
 
-# resource "aws_route53_record" "root" {
-#   zone_id = aws_route53_zone.primary.zone_id
-#   name    = var.domain_name
-#   type    = "A"
+resource "aws_route53_record" "root" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.domain_name
+  type    = "A"
 
-#   alias {
-#     name                   = aws_cloudfront_distribution.site.domain_name
-#     zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
-#     evaluate_target_health = false
-#   }
-# }
+  ttl = 300
 
-# resource "aws_route53_record" "www" {
-#   zone_id = aws_route53_zone.primary.zone_id
-#   name    = "www.${var.domain_name}"
-#   type    = "CNAME"
-#   ttl     = 300
+  records = [
+    "185.199.108.153",
+    "185.199.109.153",
+    "185.199.110.153",
+    "185.199.111.153"
+  ]
+}
 
-#   records = [
-#     var.domain_name
-#   ]
-# }
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "www.${var.domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+
+  records = [
+    var.domain_name
+  ]
+}
 
 // MX record for Gmail
 resource "aws_route53_record" "gmail" {
