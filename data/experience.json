@@ -1,9 +1,21 @@
 [
     {
+        "role":"Cofounder",
+        "company":"ResearchWiseAI",
+        "summary":"With the leap forward we have all seen in generative AI, [Ray Poynter](https://raypoynter.com/) and I have teamed up to create [ResearchWiseAI](https://researchwiseai.com/). Our aim is to automate the simple and common elements of analysing market research survey data. We particularly focusing on making it much faster for a researcher to get initial insight from a dataset and reduce the work required to create a first report or presentation.",
+        "range":"Aug 2023 - Present"
+    },
+    {
+        "role":"Consultant",
+        "company":"Independent",
+        "summary":"Using what I have learned from working in a range of environments and industries, I am now offering my services as a consultant. I am able to offer a range of services from technical consultancy, to team building, to product development and more. I am also able to offer training in a range of areas including leveraging generative AI, prototyping projects quickly and domain driven design for rapid development.",
+        "range":"Nov 2022 - Present"
+    },
+    {
         "role":"Chief Technology Officer",
         "company":"Tinto",
         "summary":"Tinto is an exciting UK startup helping to connect mums and mums-to-be. We are developing a platform that enables mums to ask each other for advice, ask and expect for advice and search through the Titno library of sage motherhood advice.\n\nAs the CTO of a startup, the responibilities are far ranging from IT services, product delivery, architecture, information governance, security, compliance and staff development.",
-        "range":"Nov 2020 - Present"
+        "range":"Nov 2020 - Nov 2022"
     },
     {
         "role":"Director of Engineering",

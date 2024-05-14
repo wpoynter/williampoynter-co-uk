@@ -1,7 +1,7 @@
 # Name for the origin
-locals {
-  s3_origin_id = "s3-web-${aws_s3_bucket.site-bucket.id}"
-}
+# locals {
+#   s3_origin_id = "s3-web-${aws_s3_bucket.site-bucket.id}"
+# }
 
 # CF distribution
 # resource "aws_cloudfront_distribution" "site" {

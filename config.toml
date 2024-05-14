@@ -14,14 +14,14 @@ email = "will@williampoynter.co.uk"
 favicon = "/favicon.ico"
 firstName = "Will"
 lastName = "Poynter"
-profileImage = "img/williampoynter.jpeg"
+profileImage = "img/willpoynter.webp"
 showEducation = true
 showExperience = true
 showOpenSource = false
 showProjects = false
 showPublications = true
 showTutorials = true
-showQr = true
+showQr = false
 showSkills = true
 description = "The professional profile of William 'Will' Poynter. Including contact information, work experience, education and past publications."
 

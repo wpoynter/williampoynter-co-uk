@@ -13,15 +13,15 @@
 #   description = "ACM domain verification record value"
 # }
 
-output "s3_bucket_url" {
-  value       = "s3://${aws_s3_bucket.site-bucket.id}?region=${aws_s3_bucket.site-bucket.region}"
-  description = "S3 site bucket URL"
-}
+# output "s3_bucket_url" {
+#   value       = "s3://${aws_s3_bucket.site-bucket.id}?region=${aws_s3_bucket.site-bucket.region}"
+#   description = "S3 site bucket URL"
+# }
 
-output "s3_redirect_endpoint" {
-  value       = aws_s3_bucket.www-site-bucket.bucket_regional_domain_name
-  description = "S3 www redirect endpoint"
-}
+# output "s3_redirect_endpoint" {
+#   value       = aws_s3_bucket.www-site-bucket.bucket_regional_domain_name
+#   description = "S3 www redirect endpoint"
+# }
 
 # output "cf_website_endpoint" {
 #   value       = aws_cloudfront_distribution.site.domain_name
