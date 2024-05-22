@@ -55,7 +55,8 @@ resource "aws_route53_record" "txt" {
     "v=spf1 include:_spf.google.com -all",
     "google-site-verification=B5lxOpkU1anBzEevtFPnR2x2K3UkhyDH1nW3mfuXXTE",
     "google-site-verification=QAgdq3FMjVbwYyPyXh7T2IS65dyRmHsQvNEXJR0ZnFc",
-    "keybase-site-verification=uqno7hxoTtWjNHskGYppg0kJNmhOfNbadStStuIEJZI"
+    "keybase-site-verification=uqno7hxoTtWjNHskGYppg0kJNmhOfNbadStStuIEJZI",
+    "openai-domain-verification=dv-05ag1fwosBGrD94r1dCQvePT"
   ]
 }
 
