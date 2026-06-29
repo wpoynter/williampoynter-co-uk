@@ -1,0 +1,15 @@
+.git
+.github
+.claude
+.gitlab-ci.yml
+ci/
+flux/
+infra/
+public/
+resources/_gen/
+node_modules/
+.hugo_build.lock
+**/*.md
+!content/**/*.md
+!archetypes/**/*.md
+!themes/**/*.md

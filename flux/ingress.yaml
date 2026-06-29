@@ -1,0 +1,39 @@
+# Internal staging host. williampoynter.sheffield.exchange has internal-
+# only DNS (split-horizon) so Let's Encrypt HTTP01 can't validate; use
+# the in-cluster Vault PKI issuer (chains up to the step-ca root that's
+# already in browsers for the PVT team).
+#
+# When cutting williampoynter.co.uk over from GitHub Pages, add a second
+# Certificate using the `letsencrypt` ClusterIssuer plus a second
+# Host(`williampoynter.co.uk`) rule to the IngressRoute below.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: williampoynter-co-uk-tls
+  namespace: williampoynter-co-uk
+spec:
+  secretName: williampoynter-co-uk-tls
+  issuerRef:
+    name: vault-pki
+    kind: ClusterIssuer
+  dnsNames:
+    - williampoynter.sheffield.exchange
+  duration: 2160h    # 90d
+  renewBefore: 720h  # 30d
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: williampoynter-co-uk
+  namespace: williampoynter-co-uk
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`williampoynter.sheffield.exchange`)
+      kind: Rule
+      services:
+        - name: williampoynter-co-uk
+          port: 8080
+  tls:
+    secretName: williampoynter-co-uk-tls

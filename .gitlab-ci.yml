@@ -1,0 +1,47 @@
+stages:
+  - build
+
+# Pull-based deploy (ADR-0018). CI's only job is to build and push an immutable,
+# sortable image tag. The cluster pulls — Flux image automation
+# (flux/image-automation.yaml) selects the newest master-<epoch>-<sha8> tag and
+# commits it into flux/deployment.yaml. No kubectl, no cluster credentials in CI,
+# no infra-repo trigger. Mirrors the hearth-waitlist reference implementation.
+
+variables:
+  # The hugo-resume theme is a submodule — without this the build context arrives
+  # without layouts and Hugo emits a near-blank site.
+  GIT_SUBMODULE_STRATEGY: recursive
+
+build:
+  stage: build
+  # Kaniko: daemonless image builder. The gitlab-runner k8s executor has no Docker
+  # daemon, so dind would need a privileged sidecar. Mirrors hearth-waitlist.
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]
+  script:
+    # Sortable, immutable tag: master-<epoch>-<sha8>. The epoch makes tags sort
+    # numerically so Flux's ImagePolicy always picks the most recent build.
+    - export IMAGE_TAG="$CI_REGISTRY_IMAGE:master-$(date +%s)-${CI_COMMIT_SHORT_SHA}"
+    # Trust the Porter Valley internal CA so kaniko can push to
+    # registry.sheffield.exchange (its cert chains to this root).
+    - cat ci/porter-valley-root-ca.crt >> /kaniko/ssl/certs/ca-certificates.crt
+    # Auth for pushing to GitLab's own registry.
+    - mkdir -p /kaniko/.docker
+    - |
+      cat > /kaniko/.docker/config.json <<EOF
+      {
+        "auths": {
+          "$CI_REGISTRY": {
+            "auth": "$(printf "%s:%s" "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')"
+          }
+        }
+      }
+      EOF
+    - echo "Building and pushing $IMAGE_TAG"
+    - /kaniko/executor
+      --context "$CI_PROJECT_DIR"
+      --dockerfile "$CI_PROJECT_DIR/Dockerfile"
+      --destination "$IMAGE_TAG"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'

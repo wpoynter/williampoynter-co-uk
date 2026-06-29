@@ -1,0 +1,163 @@
+# Flux image automation — pull-based deploy (ADR-0018).
+#
+# Steady state: CI builds + pushes an immutable, sortable tag
+# (master-<epoch>-<sha8>); the image-reflector controller scans the registry,
+# the ImagePolicy selects the newest, and the image-automation controller
+# commits the new tag into flux/deployment.yaml and reconciles it. No kubectl
+# from CI, no cluster credentials in the pipeline, no :latest in steady state.
+#
+# Everything is self-contained in the williampoynter-co-uk namespace: a dedicated
+# write-scoped GitRepository (separate from the read-only reconcile source in
+# flux-system) keeps the write_repository credential blast-radius to this
+# namespace only. Copied from hearth-waitlist with names + branch swapped.
+---
+# Scans the registry for available tags. certSecretRef gives the
+# image-reflector controller the Porter Valley internal CA so it trusts
+# registry.sheffield.exchange (the controller has its own trust store, unlike
+# the nodes). secretRef authenticates the scan (reuses the in-namespace docker
+# pull secret).
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: williampoynter-co-uk
+  namespace: williampoynter-co-uk
+spec:
+  image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk
+  interval: 5m
+  secretRef:
+    name: registry-credentials
+  certSecretRef:
+    name: registry-ca
+---
+# Selects the newest CI tag. master-<epoch>-<sha8>: extract the epoch and sort
+# numerically, so the highest epoch (most recent build) always wins.
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: williampoynter-co-uk
+  namespace: williampoynter-co-uk
+spec:
+  imageRepositoryRef:
+    name: williampoynter-co-uk
+  filterTags:
+    pattern: '^master-(?P<ts>[0-9]+)-[0-9a-f]+$'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc
+---
+# Write-scoped source the automation pushes commits back to. Distinct from the
+# read-only GitRepository in flux-system that drives reconciliation.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: williampoynter-co-uk-write
+  namespace: williampoynter-co-uk
+spec:
+  interval: 1m
+  ref:
+    branch: master
+  secretRef:
+    name: flux-git-write
+  url: https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git
+---
+# Commits the selected tag into flux/deployment.yaml (Setters strategy keys off
+# the `# {"$imagepolicy": ...}` marker on the image line) and pushes to master.
+# `[skip ci]` in the commit message stops the automation's own commit from
+# re-triggering the build pipeline (which would push a newer tag and loop
+# forever). This diverges from the current hearth-waitlist template, which omits
+# it — see deploy notes.
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: williampoynter-co-uk
+  namespace: williampoynter-co-uk
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: williampoynter-co-uk-write
+  git:
+    checkout:
+      ref:
+        branch: master
+    commit:
+      author:
+        name: flux-image-automation
+        email: flux@sheffield.exchange
+      messageTemplate: |
+        deploy: williampoynter-co-uk {{range .Updated.Images}}{{println .}}{{end}} [skip ci]
+    push:
+      branch: master
+  update:
+    path: ./flux
+    strategy: Setters
+---
+# Porter Valley internal root CA (public cert) for the image-reflector
+# controller to trust registry.sheffield.exchange during tag scans.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-ca
+  namespace: williampoynter-co-uk
+type: Opaque
+stringData:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIB5TCCAYqgAwIBAgIRAOuv3o+VwvQnB/fhSAFgY7swCgYIKoZIzj0EAwIwUDEi
+    MCAGA1UEChMZUG9ydGVyIFZhbGxleSBJbnRlcm5hbCBDQTEqMCgGA1UEAxMhUG9y
+    dGVyIFZhbGxleSBJbnRlcm5hbCBDQSBSb290IENBMB4XDTI2MDMyNTE3MTEwOFoX
+    DTM2MDMyMjE3MTEwOFowUDEiMCAGA1UEChMZUG9ydGVyIFZhbGxleSBJbnRlcm5h
+    bCBDQTEqMCgGA1UEAxMhUG9ydGVyIFZhbGxleSBJbnRlcm5hbCBDQSBSb290IENB
+    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEp7w9b60VKBXAS2mxggPbRu+uEyAj
+    H1KZYwJ0iU6cnl4YpVAiqNOsZJcsPqZsS1+bwNzohNXnJD04oNU5uKwvqqNFMEMw
+    DgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYEFMSi
+    0VcYU5l6anmGb4DXxu4haoxLMAoGCCqGSM49BAMCA0kAMEYCIQCKwfsA9FQlboJy
+    Vjsv40hJLjZAv4orChfLSRUx5yGVfgIhALNHv9Zhj0hz46i3NmuzYFttVKuMDmb3
+    +z7Y18Fg2Mo8
+    -----END CERTIFICATE-----
+---
+# Write-scoped git credential for the automation's commit-back. Pulls a
+# write_repository deploy token from Vault (distinct from the read-only
+# williampoynter-co-uk-git used by the reconcile source + registry pull). ca.crt
+# so the source controller trusts vcs.sheffield.exchange over HTTPS.
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: flux-git-write
+  namespace: williampoynter-co-uk
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    name: vault
+    kind: ClusterSecretStore
+  target:
+    name: flux-git-write
+    creationPolicy: Owner
+    template:
+      data:
+        username: "{{ .username }}"
+        password: "{{ .password }}"
+        ca.crt: |
+          -----BEGIN CERTIFICATE-----
+          MIIB5TCCAYqgAwIBAgIRAOuv3o+VwvQnB/fhSAFgY7swCgYIKoZIzj0EAwIwUDEi
+          MCAGA1UEChMZUG9ydGVyIFZhbGxleSBJbnRlcm5hbCBDQTEqMCgGA1UEAxMhUG9y
+          dGVyIFZhbGxleSBJbnRlcm5hbCBDQSBSb290IENBMB4XDTI2MDMyNTE3MTEwOFoX
+          DTM2MDMyMjE3MTEwOFowUDEiMCAGA1UEChMZUG9ydGVyIFZhbGxleSBJbnRlcm5h
+          bCBDQTEqMCgGA1UEAxMhUG9ydGVyIFZhbGxleSBJbnRlcm5hbCBDQSBSb290IENB
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEp7w9b60VKBXAS2mxggPbRu+uEyAj
+          H1KZYwJ0iU6cnl4YpVAiqNOsZJcsPqZsS1+bwNzohNXnJD04oNU5uKwvqqNFMEMw
+          DgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYEFMSi
+          0VcYU5l6anmGb4DXxu4haoxLMAoGCCqGSM49BAMCA0kAMEYCIQCKwfsA9FQlboJy
+          Vjsv40hJLjZAv4orChfLSRUx5yGVfgIhALNHv9Zhj0hz46i3NmuzYFttVKuMDmb3
+          +z7Y18Fg2Mo8
+          -----END CERTIFICATE-----
+  data:
+    - secretKey: username
+      remoteRef:
+        key: secret/data/infrastructure/flux/williampoynter-co-uk-git-write
+        property: username
+    - secretKey: password
+      remoteRef:
+        key: secret/data/infrastructure/flux/williampoynter-co-uk-git-write
+        property: password
