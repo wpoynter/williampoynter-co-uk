@@ -86,7 +86,7 @@ spec:
         name: flux-image-automation
         email: flux@sheffield.exchange
       messageTemplate: |
-        deploy: williampoynter-co-uk {{range .Updated.Images}}{{println .}}{{end}} [skip ci]
+        deploy: williampoynter-co-uk {{range .Changed.Images}}{{println .}}{{end}} [skip ci]
     push:
       branch: master
   update:
