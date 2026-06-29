@@ -85,8 +85,11 @@ spec:
       author:
         name: flux-image-automation
         email: flux@sheffield.exchange
-      messageTemplate: |
-        deploy: williampoynter-co-uk {{range .Changed.Images}}{{println .}}{{end}} [skip ci]
+      # Static message: this cluster's image-automation-controller rejects both
+      # the old `.Updated.Images` and `.Changed.Images` template fields, so avoid
+      # template field access entirely. `[skip ci]` stops the automation's own
+      # commit from re-triggering the build pipeline (which would loop forever).
+      messageTemplate: 'deploy: williampoynter-co-uk automated image update [skip ci]'
     push:
       branch: master
   update:
