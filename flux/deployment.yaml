@@ -21,10 +21,11 @@ spec:
         - name: registry-credentials
       containers:
         - name: web
-          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:latest # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk"}
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1782740949-a4610292 # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk"}
           # Tag managed by Flux ImageUpdateAutomation (flux/image-automation.yaml).
-          # The :latest above is a one-time bootstrap seed; the first reconcile
-          # rewrites it to the newest master-<epoch>-<sha8> tag and keeps it pinned.
+          # Pinned manually for the initial rollout because the flux-git-write
+          # token can't push to master yet (deploy tokens are blocked from
+          # protected branches). Once that's fixed the automation keeps it pinned.
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
