@@ -155,12 +155,17 @@ spec:
           Vjsv40hJLjZAv4orChfLSRUx5yGVfgIhALNHv9Zhj0hz46i3NmuzYFttVKuMDmb3
           +z7Y18Fg2Mo8
           -----END CERTIFICATE-----
+  # Shared group access token (porter-valley-tech, Maintainer + write_repository)
+  # — a GitLab group token, unlike a deploy token, is permitted to push to the
+  # protected master branch. One secret serves every ADR-0018 repo's commit-back
+  # (williampoynter, admin-dashboard, hearth-waitlist), so they all read this
+  # shared path rather than a per-repo token. See WILL-6.
   data:
     - secretKey: username
       remoteRef:
-        key: secret/data/infrastructure/flux/williampoynter-co-uk-git-write
+        key: secret/data/infrastructure/flux/git-write
         property: username
     - secretKey: password
       remoteRef:
-        key: secret/data/infrastructure/flux/williampoynter-co-uk-git-write
+        key: secret/data/infrastructure/flux/git-write
         property: password
