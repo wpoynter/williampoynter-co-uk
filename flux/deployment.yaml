@@ -21,7 +21,7 @@ spec:
         - name: registry-credentials
       containers:
         - name: web
-          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1783087506-98900f5f # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk"}
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1783145944-a6b83a6c # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk"}
           # Tag managed by Flux ImageUpdateAutomation (flux/image-automation.yaml).
           # Pinned manually for the initial rollout because the flux-git-write
           # token can't push to master yet (deploy tokens are blocked from
