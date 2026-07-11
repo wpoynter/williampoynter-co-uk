@@ -6,7 +6,10 @@ FROM hugomods/hugo:exts-0.125.4 AS builder
 WORKDIR /src
 COPY . .
 ENV HUGO_ENVIRONMENT=production HUGO_ENV=production TZ=Europe/London
-RUN hugo --gc --minify
+# Build sentinel (PLAT-240): CI passes the image tag so verify-staging can
+# poll /build-tag.txt and know exactly which build staging is serving.
+ARG BUILD_TAG=dev
+RUN hugo --gc --minify && printf '%s\n' "$BUILD_TAG" > /src/public/build-tag.txt
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 COPY --from=builder /src/public /usr/share/nginx/html

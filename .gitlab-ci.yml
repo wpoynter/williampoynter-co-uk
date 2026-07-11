@@ -1,32 +1,68 @@
+# Belt-and-braces loop guard (pvt-gitlab-ci-authoring rule 7): the Flux
+# automation commit and the promote commit both carry [skip ci], which
+# already prevents pipeline creation - this guard keeps that true even if
+# a future edit drops [skip ci] from either message.
+workflow:
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /automated image update/'
+      when: never
+    - if: '$CI_COMMIT_MESSAGE =~ /^promote:/'
+      when: never
+    - when: always
+
 stages:
   - build
+  - verify-staging
+  - promote
 
-# Pull-based deploy (ADR-0018). CI's only job is to build and push an immutable,
-# sortable image tag. The cluster pulls — Flux image automation
-# (flux/image-automation.yaml) selects the newest master-<epoch>-<sha8> tag and
-# commits it into flux/deployment.yaml. No kubectl, no cluster credentials in CI,
-# no infra-repo trigger. Mirrors the hearth-waitlist reference implementation.
+# Pull-based deploy (ADR-0018) plus the PLAT-240 environment axis.
+#
+# build          - push an immutable, sortable image tag (master-<epoch>-<sha8>).
+#                  Flux image automation deploys it to STAGING automatically via
+#                  the williampoynter-co-uk-staging ImagePolicy marker on
+#                  flux/deployment-staging.yaml. Prod is NOT touched: its image
+#                  line carries no marker.
+# verify-staging - poll until the canonical staging FQDN serves THIS pipeline's
+#                  tag (Dockerfile bakes it at /build-tag.txt), then run the
+#                  static-site checks.
+# promote        - manual gate (ADR-0018 amendment 2026-07-11). Writes the
+#                  staging-proven tag into flux/deployment.yaml as plain text
+#                  and pushes with [skip ci] - the promote commit triggers NO
+#                  pipeline. Prod advances only here.
+#
+# No kubectl, no KUBE_* context, no cluster credentials in any job (ADR-0018).
+# No runner tags: product jobs run on the brocco-k8s-runner, never the infra
+# shell pair (tier isolation is a security boundary).
 
 variables:
-  # The hugo-resume theme is a submodule — without this the build context arrives
-  # without layouts and Hugo emits a near-blank site.
+  # The hugo-resume theme is a submodule - without this the build context
+  # arrives without layouts and Hugo emits a near-blank site.
   GIT_SUBMODULE_STRATEGY: recursive
+  STAGING_URL: "https://williampoynter-co-uk.app.staging.psl.sheffield.exchange"
+  # Porter Valley root CA, mounted into every k8s-runner job pod by the
+  # gitlab-runner HelmRelease. Same root that signs the vault-pki cert on the
+  # staging FQDN.
+  CA_CERT: "/etc/ssl/certs/porter-valley-root-ca.crt"
+  VAULT_CLI_VERSION: "1.18.1"
 
 build:
   stage: build
-  # Kaniko: daemonless image builder. The gitlab-runner k8s executor has no Docker
-  # daemon, so dind would need a privileged sidecar. Mirrors hearth-waitlist.
+  # Kaniko: daemonless image builder. The gitlab-runner k8s executor has no
+  # Docker daemon. One kaniko executor invocation per job - never two in one
+  # container (kaniko state corruption; admin-dashboard pipelines 374/375).
   image:
     name: gcr.io/kaniko-project/executor:v1.23.2-debug
     entrypoint: [""]
   script:
-    # Sortable, immutable tag: master-<epoch>-<sha8>. The epoch makes tags sort
-    # numerically so Flux's ImagePolicy always picks the most recent build.
-    - export IMAGE_TAG="$CI_REGISTRY_IMAGE:master-$(date +%s)-${CI_COMMIT_SHORT_SHA}"
+    # Sortable, immutable tag: master-<epoch>-<sha8>. The epoch makes tags
+    # sort numerically so the staging ImagePolicy always picks the newest.
+    - export TAG="master-$(date +%s)-${CI_COMMIT_SHORT_SHA}"
+    - export IMAGE_TAG="$CI_REGISTRY_IMAGE:${TAG}"
+    # Hand the tag to verify-staging / promote via dotenv.
+    - echo "TAG=${TAG}" > build.env
     # Trust the Porter Valley internal CA so kaniko can push to
-    # registry.sheffield.exchange (its cert chains to this root).
+    # registry.sheffield.exchange.
     - cat ci/porter-valley-root-ca.crt >> /kaniko/ssl/certs/ca-certificates.crt
-    # Auth for pushing to GitLab's own registry.
     - mkdir -p /kaniko/.docker
     - |
       cat > /kaniko/.docker/config.json <<EOF
@@ -42,6 +78,119 @@ build:
     - /kaniko/executor
       --context "$CI_PROJECT_DIR"
       --dockerfile "$CI_PROJECT_DIR/Dockerfile"
+      --build-arg "BUILD_TAG=${TAG}"
       --destination "$IMAGE_TAG"
+  artifacts:
+    reports:
+      dotenv: build.env
+    expire_in: 1 week
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+
+verify-staging:
+  stage: verify-staging
+  needs: ["build"]
+  image: alpine:3.20
+  timeout: 40m
+  script:
+    - apk add --no-cache curl
+    # Wait for staging to serve THIS pipeline's tag. Worst-case pull-based
+    # latency: ImageRepository scan 5m + ImageUpdateAutomation 5m + git push
+    # + flux-system GitRepository 1m + Kustomization reconcile + rollout.
+    # 25 minutes of headroom; poll every 20s.
+    - |
+      deadline=$(( $(date +%s) + 1500 ))
+      while :; do
+        served="$(curl -fsS --cacert "$CA_CERT" "$STAGING_URL/build-tag.txt" 2>/dev/null || true)"
+        if [ "$served" = "$TAG" ]; then
+          echo "staging serves $TAG"
+          break
+        fi
+        if [ "$(date +%s)" -ge "$deadline" ]; then
+          echo "ERROR: staging never served tag $TAG (last seen: '${served:-<none>}')"
+          echo "Check: DNS A record live (playbook 52)? ImagePolicy/automation healthy?"
+          exit 1
+        fi
+        echo "staging serves '${served:-<none>}', waiting for $TAG ..."
+        sleep 20
+      done
+    # Static-site checks - well under 60s once staging serves the tag.
+    - test "$(curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$STAGING_URL/")" = "200"
+    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/" | grep -qi "William Poynter"
+    - test "$(curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$STAGING_URL/healthz")" = "200"
+    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/sitemap.xml" | grep -q "<urlset"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+
+promote:
+  stage: promote
+  # Promotion is an explicit action (ADR-0018 amendment): when manual.
+  # allow_failure: false keeps the pipeline 'blocked' rather than 'passed'
+  # until promotion runs - an unpromoted build is visibly unfinished. Skipping
+  # promotion for a given build is fine; the next promotion supersedes it.
+  when: manual
+  allow_failure: false
+  needs: ["build", "verify-staging"]
+  image: alpine:3.20
+  timeout: 15m
+  # Vault JWT auth - mirrors porter-valley-infra .gitlab/ci/templates.yml
+  # .vault-jwt-auth (no shared include mechanism exists for product repos;
+  # do NOT copy the networks repo's incompatible variant). aud must match
+  # bound_audiences on the Vault role and is deliberately NOT VAULT_ADDR.
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: https://vault.svc.internal
+  variables:
+    VAULT_ROLE: "ci-williampoynter-co-uk-promote"
+    GIT_STRATEGY: none
+  script:
+    - apk add --no-cache curl unzip ca-certificates git
+    - cp "$CA_CERT" /usr/local/share/ca-certificates/porter-valley-root-ca.crt
+    - update-ca-certificates >/dev/null
+    - curl -fsSL "https://releases.hashicorp.com/vault/${VAULT_CLI_VERSION}/vault_${VAULT_CLI_VERSION}_linux_amd64.zip" -o /tmp/vault.zip
+    - unzip -d /usr/local/bin /tmp/vault.zip vault && chmod +x /usr/local/bin/vault
+    - export VAULT_ADDR="${VAULT_ADDR:-https://vault.sheffield.exchange}"
+    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role="${VAULT_ROLE}" jwt="${VAULT_ID_TOKEN}")"
+    - |
+      if [ -z "${VAULT_TOKEN}" ]; then
+        echo "ERROR: Failed to obtain Vault token for role ${VAULT_ROLE}"
+        exit 1
+      fi
+    # Platform verdict - PLACEHOLDER (docs/contracts.md Environment axis says
+    # the source is recorded back once proven; ticket tracks the real one).
+    # Today: the staging health endpoint must answer 200 at promote time.
+    - test "$(curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$STAGING_URL/healthz")" = "200"
+    # Informational: verify-staging already proved $TAG served on staging.
+    # If a newer build has since auto-deployed there, promoting $TAG is still
+    # legal (it was staging-proven); just make it visible.
+    - |
+      served="$(curl -fsS --cacert "$CA_CERT" "$STAGING_URL/build-tag.txt" || true)"
+      if [ "$served" != "$TAG" ]; then
+        echo "NOTE: staging currently serves '${served}'; promoting the staging-proven tag ${TAG}"
+      fi
+    # Shared group git-write credential (ADR-0018 2026-07-03 amendment) via
+    # ~/.netrc so it never appears in the process list or job log.
+    - export GIT_USER="$(vault kv get -field=username secret/infrastructure/flux/git-write)"
+    - export GIT_PASS="$(vault kv get -field=password secret/infrastructure/flux/git-write)"
+    - printf 'machine vcs.sheffield.exchange login %s password %s\n' "$GIT_USER" "$GIT_PASS" > ~/.netrc
+    - chmod 600 ~/.netrc
+    - git clone --depth 1 --branch master https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git /tmp/promote
+    - cd /tmp/promote
+    # Plain-text tag write: prod's image line has NO $imagepolicy marker, so
+    # this sed is the ONLY writer of the prod tag.
+    - sed -i -E "s|(image: registry\.sheffield\.exchange/porter-valley-tech/williampoynter-co-uk:)[A-Za-z0-9._-]+|\1${TAG}|" flux/deployment.yaml
+    - grep -q "williampoynter-co-uk:${TAG}" flux/deployment.yaml
+    - |
+      if git diff --quiet -- flux/deployment.yaml; then
+        echo "prod already runs ${TAG} - nothing to promote"
+        exit 0
+      fi
+    - git config user.name "promote-bot"
+    - git config user.email "flux@sheffield.exchange"
+    # [skip ci] is load-bearing: the promote commit must trigger NO pipeline
+    # (ADR-0018 [skip ci] discipline is UNCHANGED by the PLAT-240 amendment).
+    - git commit -m "promote: williampoynter-co-uk ${TAG} to prod [skip ci]" -- flux/deployment.yaml
+    - git push origin HEAD:master
+    - echo "promoted ${TAG} to prod - Flux reconciles it within ~10m"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
