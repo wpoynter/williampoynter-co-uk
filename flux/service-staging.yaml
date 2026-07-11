@@ -1,0 +1,20 @@
+# Staging backend Service (PLAT-240). The staging IngressRoute + Certificate
+# are GENERATED in porter-valley-infra from the naming envelope
+# (williampoynter-co-uk.app.staging.psl) and route here - never hand-author
+# an IngressRoute for the canonical staging FQDN in this repo.
+apiVersion: v1
+kind: Service
+metadata:
+  name: williampoynter-co-uk-staging
+  namespace: williampoynter-co-uk
+  labels:
+    app: williampoynter-co-uk
+spec:
+  selector:
+    app: williampoynter-co-uk
+    component: web-staging
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

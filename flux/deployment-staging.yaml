@@ -1,0 +1,73 @@
+# Staging deploy target (PLAT-240 env axis; ADR-0018 amendment 2026-07-11).
+# Auto-tracks new master-<epoch>-<sha8> tags via the
+# williampoynter-co-uk-staging ImagePolicy marker below. Served internally at
+# https://williampoynter-co-uk.app.staging.psl.sheffield.exchange (vault-pki
+# cert; the IngressRoute/Certificate are GENERATED in porter-valley-infra per
+# the app naming contract - do not hand-author them here).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: williampoynter-co-uk-staging
+  namespace: williampoynter-co-uk
+  labels:
+    app: williampoynter-co-uk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: williampoynter-co-uk
+      component: web-staging
+  template:
+    metadata:
+      labels:
+        app: williampoynter-co-uk
+        component: web-staging
+    spec:
+      imagePullSecrets:
+        - name: registry-credentials
+      containers:
+        - name: web
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1783145944-a6b83a6c # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk-staging"}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 1
+            periodSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-tmp
+              mountPath: /tmp
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}

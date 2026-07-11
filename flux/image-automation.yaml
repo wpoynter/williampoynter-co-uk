@@ -29,12 +29,35 @@ spec:
   certSecretRef:
     name: registry-ca
 ---
-# Selects the newest CI tag. master-<epoch>-<sha8>: extract the epoch and sort
-# numerically, so the highest epoch (most recent build) always wins.
+# PROD ImagePolicy (one ImagePolicy per env, PLAT-240 / ADR-0018 amendment
+# 2026-07-11). Kept as the prod env's policy record and for observability
+# (flux get image policy shows the newest candidate tag), but NO marker
+# references it: flux/deployment.yaml is promotion-managed and its image
+# line deliberately carries no $imagepolicy marker, so the automation can
+# NEVER rewrite prod. Do not re-add a prod marker - the CI promote job is
+# the only writer of the prod tag.
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: williampoynter-co-uk
+  namespace: williampoynter-co-uk
+spec:
+  imageRepositoryRef:
+    name: williampoynter-co-uk
+  filterTags:
+    pattern: '^master-(?P<ts>[0-9]+)-[0-9a-f]+$'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc
+---
+# STAGING ImagePolicy (PLAT-240): auto-tracks the newest CI tag
+# (master-<epoch>-<sha8>, numeric sort on the epoch). Its marker lives on
+# the image line of flux/deployment-staging.yaml.
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: williampoynter-co-uk-staging
   namespace: williampoynter-co-uk
 spec:
   imageRepositoryRef:
@@ -61,12 +84,13 @@ spec:
     name: flux-git-write
   url: https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git
 ---
-# Commits the selected tag into flux/deployment.yaml (Setters strategy keys off
-# the `# {"$imagepolicy": ...}` marker on the image line) and pushes to master.
-# `[skip ci]` in the commit message stops the automation's own commit from
-# re-triggering the build pipeline (which would push a newer tag and loop
-# forever). This diverges from the current hearth-waitlist template, which omits
-# it — see deploy notes.
+# Commits the selected tag into flux/deployment-staging.yaml - the only
+# marker-anchored file (Setters strategy keys off the `# {"$imagepolicy":
+# ...}` marker on the image line) - and pushes to master. Prod
+# (flux/deployment.yaml) has no marker and is advanced only by the CI
+# promote job (PLAT-240). `[skip ci]` in the commit message stops the
+# automation's own commit from re-triggering the build pipeline (which
+# would push a newer tag and loop forever).
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageUpdateAutomation
 metadata:

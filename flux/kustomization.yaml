@@ -4,6 +4,8 @@ resources:
   - namespace.yaml
   - registry-secret.yaml
   - deployment.yaml
+  - deployment-staging.yaml
   - service.yaml
+  - service-staging.yaml
   - ingress.yaml
   - image-automation.yaml

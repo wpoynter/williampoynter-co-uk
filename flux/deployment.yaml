@@ -21,11 +21,13 @@ spec:
         - name: registry-credentials
       containers:
         - name: web
-          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1783145944-a6b83a6c # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk"}
-          # Tag managed by Flux ImageUpdateAutomation (flux/image-automation.yaml).
-          # Pinned manually for the initial rollout because the flux-git-write
-          # token can't push to master yet (deploy tokens are blocked from
-          # protected branches). Once that's fixed the automation keeps it pinned.
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1783145944-a6b83a6c # promotion-managed (PLAT-240): no $imagepolicy marker
+          # PROD image line - promotion-managed (ADR-0018 amendment
+          # 2026-07-11). Deliberately NO {"$imagepolicy": ...} marker: the
+          # Setters strategy rewrites only marker-anchored lines, so the
+          # ImageUpdateAutomation can never advance prod. The CI promote job
+          # writes the staging-proven tag here as plain text and pushes with
+          # [skip ci]. Rollback = git revert of a promote commit.
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
