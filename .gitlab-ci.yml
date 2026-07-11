@@ -178,8 +178,13 @@ promote:
     - git clone --depth 1 --branch master https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git /tmp/promote
     - cd /tmp/promote
     # Plain-text tag write: prod's image line has NO $imagepolicy marker, so
-    # this sed is the ONLY writer of the prod tag.
-    - sed -i -E "s|(image: registry\.sheffield\.exchange/porter-valley-tech/williampoynter-co-uk:)[A-Za-z0-9._-]+|\1${TAG}|" flux/deployment.yaml
+    # this sed is the ONLY writer of the prod tag. Block scalar is REQUIRED:
+    # the pattern contains 'image: ' and a plain YAML scalar with a
+    # colon-space silently parses as a mapping, which GitLab rejects as an
+    # invalid script (pipeline fails at creation with zero jobs - the
+    # pipeline 411/413 incident).
+    - |
+      sed -i -E "s|(image: registry\.sheffield\.exchange/porter-valley-tech/williampoynter-co-uk:)[A-Za-z0-9._-]+|\1${TAG}|" flux/deployment.yaml
     - grep -q "williampoynter-co-uk:${TAG}" flux/deployment.yaml
     - |
       if git diff --quiet -- flux/deployment.yaml; then
@@ -190,7 +195,10 @@ promote:
     - git config user.email "flux@sheffield.exchange"
     # [skip ci] is load-bearing: the promote commit must trigger NO pipeline
     # (ADR-0018 [skip ci] discipline is UNCHANGED by the PLAT-240 amendment).
-    - git commit -m "promote: williampoynter-co-uk ${TAG} to prod [skip ci]" -- flux/deployment.yaml
+    # Block scalar: the message contains a colon-space (same YAML trap as
+    # the sed line above).
+    - |
+      git commit -m "promote: williampoynter-co-uk ${TAG} to prod [skip ci]" -- flux/deployment.yaml
     - git push origin HEAD:master
     - echo "promoted ${TAG} to prod - Flux reconciles it within ~10m"
   rules:
