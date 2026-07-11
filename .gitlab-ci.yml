@@ -124,12 +124,13 @@ verify-staging:
 
 promote:
   stage: promote
-  # Promotion is an explicit action (ADR-0018 amendment): when manual.
-  # allow_failure: false keeps the pipeline 'blocked' rather than 'passed'
-  # until promotion runs - an unpromoted build is visibly unfinished. Skipping
-  # promotion for a given build is fine; the next promotion supersedes it.
-  when: manual
-  allow_failure: false
+  # Promotion is an explicit action (ADR-0018 amendment): when manual, set
+  # INSIDE the rule - GitLab rejects a job-level `when:` combined with
+  # `rules:` (pipeline fails at creation with zero jobs; learned on
+  # pipeline 411). allow_failure: false keeps the pipeline 'blocked'
+  # rather than 'passed' until promotion runs - an unpromoted build is
+  # visibly unfinished. Skipping promotion for a given build is fine; the
+  # next promotion supersedes it.
   needs: ["build", "verify-staging"]
   image: alpine:3.20
   timeout: 15m
@@ -194,3 +195,5 @@ promote:
     - echo "promoted ${TAG} to prod - Flux reconciles it within ~10m"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: false
