@@ -116,9 +116,12 @@ verify-staging:
       done
     # Static-site checks - well under 60s once staging serves the tag.
     - test "$(curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$STAGING_URL/")" = "200"
-    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/" | grep -qi "William Poynter"
+    # grep WITHOUT -q: under pipefail, grep -q exits at first match and
+    # curl dies on EPIPE writing the rest of the body (exit 23) - the
+    # pipeline-411/418 verify failures. Reading the full stream is the fix.
+    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/" | grep -i "William Poynter" >/dev/null
     - test "$(curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$STAGING_URL/healthz")" = "200"
-    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/sitemap.xml" | grep -q "<urlset"
+    - curl -fsS --cacert "$CA_CERT" "$STAGING_URL/sitemap.xml" | grep "<urlset" >/dev/null
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
 
