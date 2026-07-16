@@ -7,6 +7,9 @@ type: app
 env: prod
 client: psl
 tier: public
+cache:
+  policy: static
+  ttl: 1h
 binding:
   namespace: williampoynter-co-uk
   service: williampoynter-co-uk
