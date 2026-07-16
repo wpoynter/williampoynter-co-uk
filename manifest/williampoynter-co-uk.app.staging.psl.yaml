@@ -1,6 +1,5 @@
-# SYNCED COPY for CI validation only. AUTHORITATIVE source:
-# porter-valley-infra/manifests/apps/williampoynter-co-uk.app.staging.psl.yaml.
-# No gate compares the two yet (PLAT-218 follow-up) - edit BOTH.
+# AUTHORITATIVE product naming envelope. porter-valley-infra consumes this
+# file through the Forge product catalog; do not hand-edit its generated mirror.
 # Client+env form: <instance>.<type>.<env>.<client>.sheffield.exchange
 # STAGING deploy target for the PSL client site (PLAT-240 env axis -
 # williampoynter is the reference instance for staging -> prod promotion).

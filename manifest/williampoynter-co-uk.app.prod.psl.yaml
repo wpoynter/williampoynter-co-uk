@@ -1,0 +1,20 @@
+# AUTHORITATIVE product naming envelope. porter-valley-infra consumes this
+# file through the Forge product catalog; do not hand-edit its generated mirror.
+# The apex and www envelopes are separate Pangolin resources backed by the
+# same product Service. Their identities are frozen for the state migration.
+instance: williampoynter-co-uk
+type: app
+env: prod
+client: psl
+tier: public
+binding:
+  namespace: williampoynter-co-uk
+  service: williampoynter-co-uk
+  port: 8080
+edge:
+  subdomain: "@"
+  domain: williampoynter.co.uk
+  target_ip: williampoynter-co-uk.williampoynter-co-uk.svc.cluster.local
+  target_port: 8080
+  method: http
+fqdn: williampoynter-co-uk.app.prod.psl.sheffield.exchange
