@@ -9,12 +9,9 @@ resource "aws_route53_record" "root" {
 
   ttl = 300
 
-  records = [
-    "185.199.108.153",
-    "185.199.109.153",
-    "185.199.110.153",
-    "185.199.111.153"
-  ]
+  # Pangolin alpha edge; Route53 remains authoritative until the planned
+  # public-DNS migration moves this zone onto the Porter Valley fleet.
+  records = ["51.195.138.165"]
 }
 
 resource "aws_route53_record" "www" {
