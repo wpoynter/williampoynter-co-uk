@@ -8,6 +8,8 @@ env: prod
 client: psl
 tier: public
 cache:
+  # Beta edge-cache canary: publish this manifest revision after the repaired
+  # naming caller-attestation path, without changing the cache policy itself.
   policy: static
   ttl: 1h
 binding:
