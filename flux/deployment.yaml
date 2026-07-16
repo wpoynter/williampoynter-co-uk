@@ -21,7 +21,7 @@ spec:
         - name: registry-credentials
       containers:
         - name: web
-          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1784152651-f72735d4 # promotion-managed (PLAT-240): no $imagepolicy marker
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1784192387-95c03c20 # promotion-managed (PLAT-240): no $imagepolicy marker
           # PROD image line - promotion-managed (ADR-0018 amendment
           # 2026-07-11). Deliberately NO {"$imagepolicy": ...} marker: the
           # Setters strategy rewrites only marker-anchored lines, so the
