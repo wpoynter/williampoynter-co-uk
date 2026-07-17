@@ -1,25 +1,25 @@
 # AUTHORITATIVE product naming envelope. porter-valley-infra consumes this
 # file through the Forge product catalog; do not hand-edit its generated mirror.
-# The apex and www envelopes are separate Pangolin resources backed by the
-# same product Service. Their identities are frozen for the state migration.
+# Derived-exposure contract (ratified 2026-07-17): the envelope declares
+# identity and vanity intent ONLY. The canonical FQDN mints one
+# SSO-protected Pangolin resource; the `domains` apex mints
+# williampoynter.co.uk and www.williampoynter.co.uk as unprotected
+# public resources. The former www sibling envelope is retired - its
+# host now derives from this envelope's `domains` entry. `tier` and the
+# `edge` block are retired; exposure derives from `domains`.
 instance: williampoynter-co-uk
 type: app
 env: prod
 client: psl
-tier: public
+fqdn: williampoynter-co-uk.app.prod.psl.sheffield.exchange
+binding:
+  namespace: williampoynter-co-uk
+  service: williampoynter-co-uk
+  port: 8080
 cache:
   # Beta edge-cache canary: publish this manifest revision after the repaired
   # naming caller-attestation path, without changing the cache policy itself.
   policy: static
   ttl: 1h
-binding:
-  namespace: williampoynter-co-uk
-  service: williampoynter-co-uk
-  port: 8080
-edge:
-  subdomain: "@"
-  domain: williampoynter.co.uk
-  target_ip: williampoynter-co-uk.williampoynter-co-uk.svc.cluster.local
-  target_port: 8080
-  method: http
-fqdn: williampoynter-co-uk.app.prod.psl.sheffield.exchange
+domains:
+  - williampoynter.co.uk

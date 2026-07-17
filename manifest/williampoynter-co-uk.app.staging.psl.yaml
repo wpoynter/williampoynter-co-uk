@@ -3,18 +3,16 @@
 # Client+env form: <instance>.<type>.<env>.<client>.sheffield.exchange
 # STAGING deploy target for the PSL client site (PLAT-240 env axis -
 # williampoynter is the reference instance for staging -> prod promotion).
-# INTERNAL ONLY: vault-pki Certificate + internal A record via the
-# generated zone companion; no Pangolin resource, no public zone entry,
-# no vanity domain. The backend Deployment/Service
+# Derived-exposure contract (ratified 2026-07-17): no `access` block and
+# no `domains`, so this envelope derives exactly ONE SSO-protected
+# Pangolin resource on its canonical FQDN (no vanity hosts, no public
+# unprotected resource). vault-pki Certificate + internal A record via
+# the generated zone companion. The backend Deployment/Service
 # (williampoynter-co-uk-staging) live in this repo's flux/ dir.
 instance: williampoynter-co-uk
 type: app
 env: staging
 client: psl
-# tier private (ratified 2026-07-13, supersedes the earlier tiger-team
-# public declaration): edge exposure derives from tier, so this stays
-# internal-only - matching what the header above already declares.
-tier: private
 binding:
   namespace: williampoynter-co-uk
   service: williampoynter-co-uk-staging
