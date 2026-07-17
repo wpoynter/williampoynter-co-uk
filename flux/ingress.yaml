@@ -3,9 +3,13 @@
 # the in-cluster Vault PKI issuer (chains up to the step-ca root that's
 # already in browsers for the PVT team).
 #
-# When cutting williampoynter.co.uk over from GitHub Pages, add a second
-# Certificate using the `letsencrypt` ClusterIssuer plus a second
-# Host(`williampoynter.co.uk`) rule to the IngressRoute below.
+# Public cutover (2026-07-17): williampoynter.co.uk arrives via the
+# Pangolin WG edge (site brocco-1 -> wg-1 DNAT -> this Traefik VIP), so
+# the public route below needs NO in-cluster Certificate - Let's Encrypt
+# terminates at the Pangolin edge, which does not verify upstream TLS.
+# Traefik serves its default cert for the public SNIs; that is transport
+# encryption on the internal leg only, by design.
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -31,6 +35,12 @@ spec:
     - websecure
   routes:
     - match: Host(`williampoynter.sheffield.exchange`)
+      kind: Rule
+      services:
+        - name: williampoynter-co-uk
+          port: 8080
+    # Public hostnames via the Pangolin edge (see header comment).
+    - match: Host(`williampoynter.co.uk`) || Host(`www.williampoynter.co.uk`)
       kind: Rule
       services:
         - name: williampoynter-co-uk
