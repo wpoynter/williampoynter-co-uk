@@ -4,8 +4,14 @@
   <div class="my-auto" id="projects-content">
     <h1 id="{{ urlize .Title }}">{{ .Title }}</h1>
     {{ .Content }}
+    {{ if eq .Section "publications" }}
+    {{ range .Data.Pages.ByDate.Reverse }}
+        {{ partial (printf "%s%s" .Type "Summary") . }}
+    {{ end }}
+    {{ else }}
     {{ range .Data.Pages.ByWeight }}
         {{ partial (printf "%s%s" .Type "Summary") . }}
+    {{ end }}
     {{ end }}
     {{ range .Sections }}
       <h2 id="{{ urlize .Title }}"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>

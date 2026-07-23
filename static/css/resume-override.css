@@ -83,3 +83,28 @@ a:hover, a:focus, a:active {
   max-width:250px;
   padding:5px;
 }
+
+.project-card {
+  border-top: 2px solid #117A65;
+  margin: 1.5rem 0;
+  max-width: 46rem;
+  padding: 1.25rem 0 0;
+}
+
+.project-card__meta {
+  color: #117A65;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.project-card h3 {
+  margin: .25rem 0 .5rem;
+}
+
+.project-card__link {
+  display: inline-block;
+  font-weight: 700;
+  margin: .25rem 0 .75rem;
+}

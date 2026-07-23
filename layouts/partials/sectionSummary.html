@@ -6,8 +6,14 @@
     </div>
   
     {{ $featuredPages := where .Pages "Params.featured" true }}
+    {{ if eq .Section "publications" }}
+    {{ range $featuredPages.ByDate.Reverse }}
+      {{ partial (printf "%s%s" .Section "Summary") . }}
+    {{ end }}
+    {{ else }}
     {{ range $featuredPages }}
       {{ partial (printf "%s%s" .Section "Summary") . }}
+    {{ end }}
     {{ end }}
   </div>
   {{ if gt .Pages $featuredPages }}

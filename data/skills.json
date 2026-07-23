@@ -1,41 +1,34 @@
 [
   {
-      "grouping":"Architecture",
-      "skills":[{"name": "GraphQL/Gateways", "icon":"graphql"},"Serverless","Microservices","RESTful APIs","SaaS/PaaS/IaaS","CQRS","Autoscaling"]
-  },{
-      "grouping":"Languages",
-      "skills":[ "Java","Ruby","bash",{"name":"C++", "icon":"cplusplus"},{"name":"C#", "icon":"csharp"},"javascript","Go","SQL", "TypeScript"]
-  },{
-    "grouping":"Tools",
-    "skills":["git","Terraform","Hashicorp Vault",{"name":"Circle.CI", "icon": "circleci"}, "Jenkins", "GitHub", "New Relic", "Jetbrains", "Jira"]
+    "grouping": "Architecture",
+    "skills": ["Microservices", "GraphQL", "Serverless", "CQRS", "RESTful APIs", "Autoscaling"]
   },
   {
-    "grouping":"Frameworks",
-    "skills": ["React", "Rails", "Express", {"name": "Next.JS", "icon": "nextjs"}]
+    "grouping": "Languages",
+    "skills": ["JavaScript", "TypeScript", "Ruby", "C++", "Rust", "PHP", "Java", "C#", "SQL", "Bash"]
   },
   {
-      "grouping":"Platform Development & Administration",
-      "skills":[ "Istio","Kong","NGINX","Wordpress", "Hugo", "Firebase"]
+    "grouping": "AI & automation",
+    "skills": ["LLM application engineering", "Agent workflows", "LangGraph", "n8n", "Zapier"]
   },
   {
-      "grouping":"Data Management",
-      "skills":[
-        "MySQL",
-        "Postgresql",
-        "Redis",
-        {"name":"Elasticseach"},
-        {"name":"S3", "icon": "amazonwebservices"},
-        {"name":"Kafka", "icon": "apache"}
-      ]
+    "grouping": "Infrastructure & cloud",
+    "skills": ["Kubernetes", "Docker", "AWS", "Google Cloud", "OpenTofu", "Terraform", "Ansible", "Flux", "GitLab", "Pangolin", "Cloudflare", "Proxmox", "Ceph"]
   },
   {
-    "grouping":"Containers & Cloud",
-      "skills":[
-          {"name":"Kubernetes","link":"https://kubernetes.io/", "icon": "kubernetes"},
-          {"name":"Docker","link":"https://docker.com", "icon":"docker"},
-          {"name":"AWS","link":"https://aws.amazon.com", "icon":"aws"},
-          {"name":"Google Cloud","link":"https://cloud.google.com", "icon":"google-cloud-platform"},
-          {"name":"Heroku","link":"https://www.heroku.com/", "icon": "heroku"}
-      ]
+    "grouping": "Data",
+    "skills": ["PostgreSQL", "MySQL", "Valkey", "Redis", "Elasticsearch", "Kafka", "S3"]
+  },
+  {
+    "grouping": "Frameworks & platforms",
+    "skills": ["Next.js", "React", "React Native", "Ruby on Rails", "Express", "Hugo", "WordPress"]
+  },
+  {
+    "grouping": "Observability",
+    "skills": ["Prometheus", "Grafana", "Headlamp", "ELK", "OpenTelemetry"]
+  },
+  {
+    "grouping": "Leadership",
+    "skills": ["Team building & hiring", "Domain-driven design", "Product delivery", "Security & GDPR compliance"]
   }
 ]

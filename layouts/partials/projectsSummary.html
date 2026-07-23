@@ -1,0 +1,7 @@
+<article class="project-card">
+  <div class="project-card__meta">{{ .Date | dateFormat "2006" }}</div>
+  <h3><a href="{{ with .Params.link }}{{ . }}{{ else }}{{ $.Permalink }}{{ end }}"{{ with .Params.link }} rel="noopener noreferrer"{{ end }}>{{ .Title }}</a></h3>
+  <p>{{ .Description | safeHTML }}</p>
+  {{ with .Params.link }}<a class="project-card__link" href="{{ . }}" rel="noopener noreferrer">Visit project <span aria-hidden="true">↗</span></a>{{ end }}
+  {{ partial "techtags" . }}
+</article>

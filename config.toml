@@ -18,9 +18,9 @@ profileImage = "img/willpoynter.webp"
 showEducation = true
 showExperience = true
 showOpenSource = false
-showProjects = false
+showProjects = true
 showPublications = true
-showTutorials = true
+showTutorials = false
 showQr = false
 showSkills = true
 description = "The professional profile of William 'Will' Poynter. Including contact information, work experience, education and past publications."
@@ -37,6 +37,10 @@ name = "LinkedIn"
 [[params.handles]]
 link = "https://github.com/wpoynter/"
 name = "GitHub"
+
+[[params.handles]]
+link = "https://medium.com/@will_21469"
+name = "Medium"
 
 [[params.handles]]
 link = "https://www.instagram.com/poynterwilliam/"

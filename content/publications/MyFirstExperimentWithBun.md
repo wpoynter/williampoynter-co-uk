@@ -1,5 +1,5 @@
 ---
-title: "My First Exerpiment with Bun"
+title: "My First Experiment with Bun"
 date: 2023-09-10
 pubtype: "Blog"
 featured: true
