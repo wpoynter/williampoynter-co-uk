@@ -43,6 +43,10 @@ a:hover, a:focus, a:active {
   #qr-code-container {
     display: none;
   }
+
+  .list-social-icons .list-inline-item {
+    margin-bottom: .75rem;
+  }
 }
 
 @font-face {
