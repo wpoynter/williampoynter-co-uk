@@ -1,62 +1,68 @@
 [
-    {
-        "role":"Chief Technology Officer & Co-founder",
-        "company":"ResearchWiseAI",
-        "summary":"Co-founded [ResearchWiseAI](https://researchwiseai.com/), a product that automates market-research survey-data analysis using generative AI. I owned the technical architecture and product direction from concept through customer delivery.",
-        "range":"Aug 2023 - Feb 2026"
-    },
-    {
-        "role":"Consultant",
-        "company":"Independent",
-        "summary":"Advise clients on technical strategy, team building and product development. I also deliver training on AI adoption and domain-driven design for engineering teams.",
-        "range":"Nov 2022 - Present"
-    },
-    {
-        "role":"Chief Technology Officer",
-        "company":"Tinto",
-        "summary":"Led IT, product delivery, architecture, security and compliance for a UK startup connecting mothers. Built and ran the engineering function end-to-end as its sole technical leader at C-level.",
-        "range":"Nov 2020 - Nov 2022"
-    },
-    {
-        "role":"Director of Engineering",
-        "company":"Babylon Health",
-        "summary":"Led the Platform: Foundation tribe, formerly Membership & Enterprise, providing leadership and architectural oversight across identity and access management, multi-tenancy, membership management, consent, feature control, profile management and data-subject tooling.\n\nThe tribe also supported the Core Business Services squad, which held deep knowledge of some of Babylon's longest-running systems. At its peak, Platform: Foundation included more than 70 people, including 55 engineers.",
-        "range":"Feb 2019 - Nov 2020"
-    },
-    {
-        "role":"Squad Lead",
-        "company":"Babylon Health",
-        "summary":"Led the Consumer & Business squad and, with its product manager, redefined it as Core Business Services to clarify its remit. Grew the team from 5 to 25 people, then reorganised its wide-ranging responsibilities into several spin-off squads.\n\nCore Business Services, the new squads and an existing team then formed Membership & Enterprise, one of Babylon's first platform tribes, which I went on to lead.",
-        "range":"May 2018 - Feb 2019"
-    },
-    {
-        "role":"Senior Engineer",
-        "company":"Babylon Health",
-        "summary":"Developed backend systems in Ruby as part of Babylon's Core Team, focusing on complex, cross-cutting concerns. Delivered federated authentication with partners, replaced an integer identifier system that was not designed for global scale, and prepared legacy systems for GDPR.",
-        "range":"Jan 2018 - May 2018"
-    },
-    {
-        "role":"Technical Manager",
-        "company":"CLOSER, University College London",
-        "summary":"Led engineering for CLOSER Discovery, a search engine publishing documentation from some of the UK's largest and longest-running longitudinal studies. Owned engineering decisions, technical consultancy and coordination between participating organisations.\n\nChaired the Technical Oversight Committee and served as lead engineer for the search engine and its metadata tooling.",
-        "range":"Jan 2016 - Dec 2017"
-    },
-    {
-        "role":"Metadata Officer",
-        "company":"CLOSER, University College London",
-        "summary":"Managed a team of Metadata Assistants enhancing longitudinal-study documentation retrospectively. Established documentation standards and procedures to maintain consistent, high-quality metadata across the participating studies.",
-        "range":"Feb 2014 - Jan 2016"
-    },
-    {
-        "role":"Chief Technology Officer",
-        "company":"Research Through Gaming",
-        "summary":"Led technical architecture for a game-based market-research platform. Worked with clients, external development teams and hosting providers to deliver bespoke data-collection games. All projects collected personal information, so I ensured compliance with the Data Protection Act and appropriate informed-consent processes.",
-        "range":"Jul 2013 - Jan 2014"
-    },
-    {
-        "role":"Database Developer",
-        "company":"Research Through Gaming",
-        "summary":"Built a bespoke data-collection tool for rapidly designing and curating game-based surveys. Led development of its database and supporting tools using PHP and MySQL.",
-        "range":"May 2012 - Jul 2013"
-    }
+  {
+    "role": "Founder",
+    "company": "Porter Valley Technology Company",
+    "summary": "Founded Porter Valley Tech as a UK sovereign technology company with the mission of delivering the next generation of the internet for families. Working solo so far, I have built the company and our cloud platform using modern IaC, CI/CD and DevSecOps practices to avoid the need for AWS, GCP or Azure.",
+    "range": "Feb 2026 - Present"
+  },
+  {
+    "role": "Chief Technology Officer & Co-founder",
+    "company": "ResearchWiseAI",
+    "summary": "Co-founded [ResearchWiseAI](https://researchwiseai.com/), a product that automates market-research survey-data analysis using generative AI. I owned the technical architecture and product direction from concept through customer delivery.",
+    "range": "Aug 2023 - Feb 2026"
+  },
+  {
+    "role": "Consultant",
+    "company": "Independent",
+    "summary": "Advise clients on technical strategy, team building and product development. I also deliver training on AI adoption and domain-driven design for engineering teams.",
+    "range": "Nov 2022 - Present"
+  },
+  {
+    "role": "Chief Technology Officer",
+    "company": "Tinto",
+    "summary": "Led IT, product delivery, architecture, security and compliance for a UK startup connecting mothers. Built and ran the engineering function end-to-end as its sole technical leader at C-level.",
+    "range": "Nov 2020 - Nov 2022"
+  },
+  {
+    "role": "Director of Engineering",
+    "company": "Babylon Health",
+    "summary": "Led the Platform: Foundation tribe, formerly Membership & Enterprise, providing leadership and architectural oversight across identity and access management, multi-tenancy, membership management, consent, feature control, profile management and data-subject tooling.\n\nThe tribe also supported the Core Business Services squad, which held deep knowledge of some of Babylon's longest-running systems. At its peak, Platform: Foundation included more than 70 people, including 55 engineers.",
+    "range": "Feb 2019 - Nov 2020"
+  },
+  {
+    "role": "Squad Lead",
+    "company": "Babylon Health",
+    "summary": "Led the Consumer & Business squad and, with its product manager, redefined it as Core Business Services to clarify its remit. Grew the team from 5 to 25 people, then reorganised its wide-ranging responsibilities into several spin-off squads.\n\nCore Business Services, the new squads and an existing team then formed Membership & Enterprise, one of Babylon's first platform tribes, which I went on to lead.",
+    "range": "May 2018 - Feb 2019"
+  },
+  {
+    "role": "Senior Engineer",
+    "company": "Babylon Health",
+    "summary": "Developed backend systems in Ruby as part of Babylon's Core Team, focusing on complex, cross-cutting concerns. Delivered federated authentication with partners, replaced an integer identifier system that was not designed for global scale, and prepared legacy systems for GDPR.",
+    "range": "Jan 2018 - May 2018"
+  },
+  {
+    "role": "Technical Manager",
+    "company": "CLOSER, University College London",
+    "summary": "Led engineering for CLOSER Discovery, a search engine publishing documentation from some of the UK's largest and longest-running longitudinal studies. Owned engineering decisions, technical consultancy and coordination between participating organisations.\n\nChaired the Technical Oversight Committee and served as lead engineer for the search engine and its metadata tooling.",
+    "range": "Jan 2016 - Dec 2017"
+  },
+  {
+    "role": "Metadata Officer",
+    "company": "CLOSER, University College London",
+    "summary": "Managed a team of Metadata Assistants enhancing longitudinal-study documentation retrospectively. Established documentation standards and procedures to maintain consistent, high-quality metadata across the participating studies.",
+    "range": "Feb 2014 - Jan 2016"
+  },
+  {
+    "role": "Chief Technology Officer",
+    "company": "Research Through Gaming",
+    "summary": "Led technical architecture for a game-based market-research platform. Worked with clients, external development teams and hosting providers to deliver bespoke data-collection games. All projects collected personal information, so I ensured compliance with the Data Protection Act and appropriate informed-consent processes.",
+    "range": "Jul 2013 - Jan 2014"
+  },
+  {
+    "role": "Database Developer",
+    "company": "Research Through Gaming",
+    "summary": "Built a bespoke data-collection tool for rapidly designing and curating game-based surveys. Led development of its database and supporting tools using PHP and MySQL.",
+    "range": "May 2012 - Jul 2013"
+  }
 ]
