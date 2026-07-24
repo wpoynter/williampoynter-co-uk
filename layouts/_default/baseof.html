@@ -34,6 +34,14 @@
   <link rel="preload" href="{{ "css/resume-override.css" | absURL }}" as="style">
   <link rel="stylesheet" href="{{ "css/resume-override.css" | absURL }}">
 
+  <script defer src="https://analytics.williampoynter.co.uk/script.js"
+    data-website-id="{{ .Site.Params.analytics.umami.websiteID }}"
+    data-domains="williampoynter.co.uk,www.williampoynter.co.uk"
+    data-performance="true"
+    data-exclude-search="true"
+    data-exclude-hash="true"
+    data-do-not-track="true"></script>
+
   <script>!function(){window.semaphore=window.semaphore||[],window.ketch=function(){window.semaphore.push(arguments)};var e=new URLSearchParams(document.location.search),o=e.has("property")?e.get("property"):"website_smart_tag",n=document.createElement("script");n.type="text/javascript",n.src="https://global.ketchcdn.com/web/v2/config/psl/".concat(o,"/boot.js"),n.defer=n.async=!0,document.getElementsByTagName("head")[0].appendChild(n)}();</script>
 
   {{ block "headfiles" . }}
@@ -60,14 +68,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
   <!-- Custom scripts for this template -->
   <script async src="/js/resume.js"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.google.analytics.trackerID }}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', '{{ .Site.Params.google.analytics.trackerID }}');
-  </script>
   {{ block "footerfiles" . }}
 
   {{ end }}

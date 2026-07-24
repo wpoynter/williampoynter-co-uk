@@ -25,10 +25,9 @@ showQr = false
 showSkills = true
 description = "The professional profile of William 'Will' Poynter. Including contact information, work experience, education and past publications."
 
-[params.google]
-
-[params.google.analytics]
-trackerID = "UA-21852562-1"
+[params.analytics.umami]
+# Non-secret website ID provisioned by porter-valley-infra/scripts/bootstrap-umami.sh.
+websiteID = "1068a319-76a6-42b1-a946-564122ff9b03"
 
 [[params.handles]]
 link = "https://www.linkedin.com/in/will-poynter-3aa34416/"
