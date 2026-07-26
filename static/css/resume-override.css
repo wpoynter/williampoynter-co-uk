@@ -27,7 +27,39 @@ a:hover, a:focus, a:active {
 }
 
 .tag {
-  color: #666;
+  background-color: #e8f1ee;
+  color: #315c53;
+  margin-right: 20px;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.tag::after {
+  background: transparent;
+  border-left-color: #e8f1ee;
+  right: -10px;
+}
+
+.tag:hover,
+.tag:focus-visible {
+  background-color: #117A65;
+  color: #fff;
+  outline: 2px solid #0b5d4f;
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+.tag:hover::after,
+.tag:focus-visible::after {
+  border-left-color: #117A65;
+}
+
+.tag:active {
+  background-color: #0b5d4f;
+  text-decoration: none;
+}
+
+.tag:active::after {
+  border-left-color: #0b5d4f;
 }
 
 .devicon {
