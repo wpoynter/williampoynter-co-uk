@@ -9,6 +9,6 @@
   </div>
   <div class="resume-date text-md-right">
     <span class="text-primary">{{ .Params.date | dateFormat "January 2006" }}</span>
-    {{ with .Params.image }}<img src="{{ . }}" class="publication-summary-image" alt="{{ $.Params.alt }}">{{ end }}
+    {{ with .Params.image }}<img src="{{ . }}" class="publication-summary-image" alt="{{ $.Params.alt }}" width="250" height="145" loading="lazy" decoding="async">{{ end }}
   </div>
 </div>

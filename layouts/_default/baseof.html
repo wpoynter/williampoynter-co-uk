@@ -13,11 +13,10 @@
   <!-- Bootstrap core CSS -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" as="style" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-  <!-- Custom fonts for this template -->
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:100,200,300,400,500,600,700,800,900&display=swap" as="style">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:100,200,300,400,500,600,700,800,900&display=swap">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap" as="style">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap">
+  <!-- Local font files avoid a late third-party font swap shifting the page. -->
+  <link rel="preload" href="{{ "fonts/open-sans-latin.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ "fonts/saira-extra-condensed-500.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ "fonts/saira-extra-condensed-700.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" as="style">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/devicons/1.8.0/css/devicons.min.css" as="style">

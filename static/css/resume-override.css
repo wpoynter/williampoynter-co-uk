@@ -1,5 +1,40 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: block;
+  src: url('/fonts/open-sans-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Extra Condensed';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('/fonts/saira-extra-condensed-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Extra Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('/fonts/saira-extra-condensed-700.woff2') format('woff2');
+}
+
 body {
   color: #666e76;
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.subheading {
+  font-family: 'Saira Extra Condensed', 'Arial Narrow', Arial, sans-serif;
 }
 
 .bg-primary {
@@ -27,16 +62,34 @@ a:hover, a:focus, a:active {
 }
 
 .tag {
+  align-items: center;
   background-color: #e8f1ee;
+  border: 1px solid #c9ddd7;
+  border-radius: 999px;
   color: #315c53;
-  margin-right: 20px;
+  display: inline-flex;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+  min-height: 2rem;
+  padding: .35rem .8rem;
   transition: background-color .2s ease, color .2s ease;
 }
 
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  overflow: visible;
+}
+
+.tags li {
+  float: none;
+}
+
+.tag::before,
 .tag::after {
-  background: transparent;
-  border-left-color: #e8f1ee;
-  right: -10px;
+  content: none;
 }
 
 .tag:hover,
@@ -48,18 +101,9 @@ a:hover, a:focus, a:active {
   text-decoration: none;
 }
 
-.tag:hover::after,
-.tag:focus-visible::after {
-  border-left-color: #117A65;
-}
-
 .tag:active {
   background-color: #0b5d4f;
   text-decoration: none;
-}
-
-.tag:active::after {
-  border-left-color: #0b5d4f;
 }
 
 .devicon {
@@ -116,8 +160,12 @@ a:hover, a:focus, a:active {
 }
 
 .publication-summary-image {
-  max-width:250px;
-  padding:5px;
+  box-sizing: border-box;
+  height: 145px;
+  max-width: 100%;
+  object-fit: contain;
+  padding: 5px;
+  width: 250px;
 }
 
 .project-card {
