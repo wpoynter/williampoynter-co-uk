@@ -6,10 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal resume / portfolio site for Will Poynter, served at https://williampoynter.co.uk. Hugo static site built on the [hugo-resume](https://github.com/eddiewebb/hugo-resume) theme (vendored as a git submodule at `themes/resume`).
 
-There are **two** active deploy paths — both build from the same source on push:
+There are **two** deploy paths - both build from the same source on push:
 
-1. **GitHub Pages** (`.github/workflows/hugo.yml`) — current public deploy at `williampoynter.co.uk`. DNS in `porter-valley-infra/dns/zones/williampoynter.co.uk.public.yaml` points at the GH Pages anycast IPs.
-2. **Porter Valley K8s cluster** (`.gitlab-ci.yml` + `flux/`) — internal staging at `williampoynter.sheffield.exchange`. CI builds a Docker image to `registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk`; Flux reconciles the manifests in `flux/` (registered from `porter-valley-infra/flux/clusters/gen-cluster/`). Mirrors the `sheffield-rocks-site` pattern, minus DB/workers/secrets — it's a static nginx serve.
+1. **Porter Valley K8s cluster** (`.gitlab-ci.yml` + `flux/`) - **current public deploy**: DNS in `porter-valley-infra/dns/zones/williampoynter.co.uk.public.yaml` points the apex at the Pangolin beta exit (51.195.137.39), which fronts the cluster nginx. CI builds a Docker image to `registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk`; Flux reconciles the manifests in `flux/` (registered from `porter-valley-infra/flux/clusters/gen-cluster/`). Mirrors the `sheffield-rocks-site` pattern, minus DB/workers/secrets - it's a static nginx serve. Also serves internal staging at `williampoynter.sheffield.exchange`. The apex is the canonical host; `flux/ingress.yaml` 308s www to it (fonts break on www otherwise - absolute apex asset URLs make font loads cross-origin and nginx sends no CORS headers).
+2. **GitHub Pages** (`.github/workflows/hugo.yml`) - the pre-Pangolin public deploy (cutover 2026-07-17); the workflow still runs but nothing points at it.
 
 The `infra/` Terraform (S3 + CloudFront + Route53 + ACM in `eu-west-2`) is the **original** hosting setup, no longer the deployment target (see commit `233d4d2` "Moving to GitHub pages") but kept in-tree. Don't edit `infra/` expecting it to affect the live site.
 
