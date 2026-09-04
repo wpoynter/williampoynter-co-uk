@@ -3,16 +3,16 @@
 # Client+env form: <instance>.<type>.<env>.<client>.sheffield.exchange
 # STAGING deploy target for the PSL client site (PLAT-240 env axis -
 # williampoynter is the reference instance for staging -> prod promotion).
-# Derived-exposure contract (ratified 2026-07-17): no `access` block and
-# no `domains`, so this envelope derives exactly ONE SSO-protected
-# Pangolin resource on its canonical FQDN (no vanity hosts, no public
-# unprotected resource). vault-pki Certificate + internal A record via
-# the generated zone companion. The backend Deployment/Service
+# No vanity `domains` on the staging track. vault-pki Certificate + internal
+# A record via the generated zone companion. The backend Deployment/Service
 # (williampoynter-co-uk-staging) live in this repo's flux/ dir.
 instance: williampoynter-co-uk
 type: app
 env: staging
 client: psl
+# ADR-0038 rule 18: the staging default, stated explicitly. Published
+# behind the account pin (generated Traefik basicAuth middleware).
+exposure: pin
 binding:
   namespace: williampoynter-co-uk
   service: williampoynter-co-uk-staging

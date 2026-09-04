@@ -1,16 +1,17 @@
 # AUTHORITATIVE product naming envelope. porter-valley-infra consumes this
 # file through the Forge product catalog; do not hand-edit its generated mirror.
-# Derived-exposure contract (ratified 2026-07-17): the envelope declares
-# identity and vanity intent ONLY. The canonical FQDN mints one
-# SSO-protected Pangolin resource; the `domains` apex mints
-# williampoynter.co.uk and www.williampoynter.co.uk as unprotected
-# public resources. The former www sibling envelope is retired - its
-# host now derives from this envelope's `domains` entry. `tier` and the
-# `edge` block are retired; exposure derives from `domains`.
+# The `domains` apex mints williampoynter.co.uk and www.williampoynter.co.uk
+# as unprotected public resources - always public, orthogonal to `exposure`,
+# which speaks only for the canonical name. The former www sibling envelope
+# is retired: its host now derives from this envelope's `domains` entry.
 instance: williampoynter-co-uk
 type: app
 env: prod
 client: psl
+# ADR-0038 D7: prod stays as it is today (this canonical publishes
+# nothing) until the gated step-2 flip rules it. Vanity `domains` and
+# `publicHosts`, where present, are unaffected - they are always public.
+exposure: internal
 fqdn: williampoynter-co-uk.app.prod.psl.sheffield.exchange
 binding:
   namespace: williampoynter-co-uk
