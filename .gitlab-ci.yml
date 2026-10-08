@@ -39,7 +39,9 @@ validate-manifests:
     - tar -xzf /tmp/cue.tar.gz -C "${CI_PROJECT_DIR}/.cue-bin" cue
     - export PATH="${CI_PROJECT_DIR}/.cue-bin:${PATH}"
     - cue version
-    - export GIT_SSL_CAINFO="${CI_PROJECT_DIR}/ci/porter-valley-root-ca.crt"
+    # TLS trust comes from the runner environment (PLAT-466): the kube
+    # runner exports GIT_SSL_CAINFO at the cluster trust bundle and the
+    # shell runners carry the root in the OS store. No per-job CA.
     - rm -rf /tmp/naming
     - >
       git clone --depth 1 --branch "${NAMING_SCHEMA_REF}"
@@ -84,10 +86,11 @@ variables:
   # arrives without layouts and Hugo emits a near-blank site.
   GIT_SUBMODULE_STRATEGY: recursive
   STAGING_URL: "https://williampoynter-co-uk.app.staging.psl.sheffield.exchange"
-  # Porter Valley root CA, mounted into every k8s-runner job pod by the
-  # gitlab-runner HelmRelease. Same root that signs the vault-pki cert on the
-  # staging FQDN.
-  CA_CERT: "/etc/ssl/certs/porter-valley-root-ca.crt"
+  # The cluster trust bundle (public roots + the Porter Valley root),
+  # written by the trust-manager Bundle porter-valley-trust and mounted into
+  # every k8s-runner job pod at /etc/pv-trust (PLAT-464/466). Same root
+  # signs the vault-pki cert on the staging FQDN. No job installs a CA.
+  CA_CERT: "/etc/pv-trust/ca-certificates.crt"
   VAULT_CLI_VERSION: "1.18.1"
 
 build:

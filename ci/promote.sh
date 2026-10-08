@@ -6,9 +6,9 @@
 # the environment - see the promote job in .gitlab-ci.yml.
 set -eu
 
-cp "$CA_CERT" /usr/local/share/ca-certificates/porter-valley-root-ca.crt
-update-ca-certificates >/dev/null
-
+# TLS trust: CA_CERT is the cluster trust bundle the runner mounts; curl
+# reads it via --cacert below and the runner environment (CURL_CA_BUNDLE,
+# VAULT_CACERT, GIT_SSL_CAINFO) covers vault and git. Nothing is installed.
 curl -fsSL "https://releases.hashicorp.com/vault/${VAULT_CLI_VERSION}/vault_${VAULT_CLI_VERSION}_linux_amd64.zip" -o /tmp/vault.zip
 unzip -d /usr/local/bin /tmp/vault.zip vault
 chmod +x /usr/local/bin/vault
