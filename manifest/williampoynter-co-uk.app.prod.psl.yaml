@@ -18,9 +18,25 @@ binding:
   service: williampoynter-co-uk
   port: 8080
 cache:
-  # Beta edge-cache canary: publish this manifest revision after the repaired
-  # naming caller-attestation path, without changing the cache policy itself.
+  # bunny.net vanity cache edge (ADR-0043, PLAT-497). A Hugo static site
+  # served by nginx: every response is public and identical for every
+  # visitor, so the whole host is cached at the edge for `ttl`, the same
+  # 1h nginx sends for HTML. Fingerprinted assets keep nginx's own
+  # `max-age=1y, immutable`. The canonical name stays `internal`; bunny
+  # fronts only williampoynter.co.uk and www (Decision 1).
   policy: static
   ttl: 1h
+  # /build-tag.txt is the deployed build tag: always read from the origin,
+  # never from the edge cache, so a check after promote sees the new tag.
+  bypassPaths:
+    - /build-tag.txt
+  # Rule 9 / ADR-0043 D2: a vanity envelope with an active policy must name
+  # the cookies that bypass the cache. This site sets NO cookies and has no
+  # authenticated responses, so the guard is reserved: anything that adds a
+  # session later must use this name prefix (or add its own here in the
+  # same change). Declaring it moves the catalog row from `bypass` (the
+  # transitional #PreCdnVanityCache arm in naming) to `active`.
+  bypassCookies:
+    - wp_session*
 domains:
   - williampoynter.co.uk

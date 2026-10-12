@@ -15,6 +15,7 @@ stages:
   - build
   - verify-staging
   - promote
+  - purge
 
 include:
   - project: porter-valley-tech/naming
@@ -174,3 +175,34 @@ promote:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
       when: manual
       allow_failure: false
+
+# Purge-on-promote (ADR-0043 Decision 6, PLAT-497): empties the bunny.net
+# pull zone for williampoynter.co.uk so the edge refetches the promoted
+# build instead of serving the previous one for up to the envelope `ttl`
+# (1h). A bridge job, copied from word-cloud-plus `cdn-purge`: it starts a
+# porter-valley-infra main pipeline with CDN_PURGE_PRODUCT set, where
+# `cdn-purge` - the only job such a pipeline runs - reads the pull zone id
+# from tofu state and calls bunny's purge with the key this repo never
+# holds. `strategy: depend` mirrors its result here. `inherit: variables:
+# false`: only CDN_PURGE_PRODUCT crosses into infra.
+#
+# Manual on purpose. Operator flow: click promote, wait until prod serves
+# the promoted tag (`curl -s https://williampoynter.co.uk/build-tag.txt` -
+# bypassPaths, so it reads the origin, not the edge), THEN cdn-purge.
+# Clicked earlier, bunny may refetch the old build while Flux is still
+# rolling and hold it for up to an hour.
+cdn-purge:
+  stage: purge
+  needs: ["promote"]
+  inherit:
+    variables: false
+  variables:
+    CDN_PURGE_PRODUCT: williampoynter-co-uk
+  trigger:
+    project: porter-valley-tech/porter-valley-infra
+    branch: main
+    strategy: depend
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
