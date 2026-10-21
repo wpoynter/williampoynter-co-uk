@@ -23,7 +23,7 @@ metadata:
   namespace: williampoynter-co-uk
 spec:
   image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk
-  interval: 5m
+  interval: 1m
   secretRef:
     name: registry-credentials
   certSecretRef:
@@ -97,7 +97,7 @@ metadata:
   name: williampoynter-co-uk
   namespace: williampoynter-co-uk
 spec:
-  interval: 5m
+  interval: 1m
   sourceRef:
     kind: GitRepository
     name: williampoynter-co-uk-write

@@ -5,8 +5,8 @@
 # see the verify-staging job in .gitlab-ci.yml.
 set -eu
 
-# Worst-case pull-based latency: ImageRepository scan 5m + ImageUpdateAutomation
-# 5m + git push + flux-system GitRepository 1m + Kustomization reconcile +
+# Worst-case pull-based latency: ImageRepository scan 1m + ImageUpdateAutomation
+# 1m + git push + flux-system GitRepository 1m + Kustomization reconcile +
 # rollout. 25 minutes of headroom; poll every 20s.
 deadline=$(( $(date +%s) + 1500 ))
 while :; do
