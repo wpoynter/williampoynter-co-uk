@@ -3,7 +3,7 @@
 {{ with .Params.link }}{{ $destination = . }}{{ end }}
 <div class="resume-item d-flex flex-column flex-md-row mb-5">
   <div class="publication-content mr-auto">
-    <h3 class="mb-0">{{ .Params.pubtype }} - <a href="{{ $destination }}"{{ if .Params.link }} rel="noopener noreferrer"{{ end }}>{{ .Params.title }}</a></h3>
+    <h3 class="mb-0">{{ .Params.pubtype }} - <a href="{{ $destination }}"{{ if .Params.link }} rel="noopener noreferrer" data-umami-event="publication_outbound_click" data-umami-event-publication="{{ .Params.title }}"{{ end }}>{{ .Params.title }}</a></h3>
     <div>{{ .Params.description | safeHTML }}</div>
     {{ partial "techtags" . }}
   </div>

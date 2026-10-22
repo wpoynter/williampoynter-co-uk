@@ -23,7 +23,7 @@
           <ul class="list-inline list-social-icons mb-0">
             {{ range .Site.Params.handles }}
                 <li class="list-inline-item">
-                  <a href="{{ .link }}" data-toggle="tooltip" title="{{ .name }}" data-offset="0 10" rel="me"
+                  <a href="{{ .link }}" data-umami-event="social_profile_click" data-umami-event-network="{{ .name }}" data-toggle="tooltip" title="{{ .name }}" data-offset="0 10" rel="me"
                     aria-label="Link to {{ $.Site.Params.firstName}}'s {{ .name}}">
                     <span class="fa-stack fa-lg">
                       <i class="fa fa-circle fa-stack-2x"></i>
