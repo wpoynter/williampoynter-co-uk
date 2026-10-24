@@ -1,13 +1,13 @@
 #!/bin/sh
-# Wait for production to serve the tag the promote job just wrote, so the
-# behaviour suite (features/) judges the promoted build and cdn-purge fires
-# only once the origin has it (ADR-0043 D6). /build-tag.txt is a bunny
-# bypass path: this reads the origin, while HTML pages come from the edge.
-# The edge is purged only after this job, so the suite adds ?v=$PROMOTED_TAG
-# to its requests (features/support/world.js) to read the promoted build.
+# Wait for production's ORIGIN to serve the tag the promote job just wrote,
+# so cdn-purge fires only once the origin has it (ADR-0043 D6) and the
+# edge refetch can only pick up the promoted build. /build-tag.txt is a
+# bunny bypass path: this reads the origin, while HTML pages come from the
+# edge. A wait only: the behaviour suite runs after the purge, in the
+# template's verify-live job (PLAT-766), so it reads what visitors get.
 # Needs PROMOTED_TAG (the promote job's promote.env dotenv artifact) and
 # BASE_URL in the environment - see the verify-prod job of porter-valley-infra
-# ci-templates/product-deploy.yml.
+# ci-templates/product-deploy.yml (alpine: sh and curl only).
 # Public CA on prod, so no --cacert.
 set -eu
 
@@ -32,5 +32,5 @@ while :; do
 done
 
 # Same settle as staging: the poll matches the new pod's first answer, which
-# can land mid-rollout. The suite itself retries a failed scenario.
+# can land mid-rollout; the purge (and the edge refetch) comes after this.
 sleep 10

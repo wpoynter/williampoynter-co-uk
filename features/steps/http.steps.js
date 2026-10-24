@@ -44,7 +44,7 @@ Then("the response body is a single build tag", async function () {
 });
 
 // verify-staging exports TAG (the build job's dotenv artifact) and
-// verify-prod PROMOTED_TAG (the promote job's); a run with neither, such
+// verify-live PROMOTED_TAG (the promote job's); a run with neither, such
 // as the prod probe or a local run, only checks the shape.
 Then("the build tag matches the one CI expects, if any", async function () {
   const expected = process.env.PROMOTED_TAG || process.env.TAG;
