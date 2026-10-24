@@ -1,12 +1,23 @@
+# williampoynter-co-uk CI - ADR-0018 pull-based product image delivery. The
+# manifest checks and the Kaniko build live here; the deploy path
+# (verify-staging, promote, verify-prod, cdn-purge, probe-prod) is the
+# porter-valley-infra template ci-templates/product-deploy.yml (PLAT-763),
+# included below and parameterised by the variables this file sets. The
+# three scripts it calls stay in ci/ (template header, "option i").
+#
 # Belt-and-braces loop guard (pvt-gitlab-ci-authoring rule 7): the Flux
 # automation commit and the promote commit both carry [skip ci], which
 # already prevents pipeline creation - this guard keeps that true even if
-# a future edit drops [skip ci] from either message.
+# a future edit drops the marker from either message. Push pipelines
+# only: a schedule (the prod probe) runs on whatever the default branch's
+# HEAD is, and after every deploy that HEAD IS the promote commit, so an
+# unscoped guard silently blocked every scheduled run (2026-10-23, the
+# first portervalley-tech probe-prod tick never created a pipeline).
 workflow:
   rules:
-    - if: '$CI_COMMIT_MESSAGE =~ /automated image update/'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE =~ /automated image update/'
       when: never
-    - if: '$CI_COMMIT_MESSAGE =~ /^promote:/'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_MESSAGE =~ /^promote:/'
       when: never
     - when: always
 
@@ -15,12 +26,35 @@ stages:
   - build
   - verify-staging
   - promote
+  - verify-prod
   - purge
 
 include:
   - project: porter-valley-tech/naming
     ref: main
     file: ci-templates/validate-manifests.yml
+  # product-deploy (porter-valley-infra ci-templates/, PLAT-763): the
+  # hands-off deploy shape every ADR-0018 site with a behaviour suite
+  # shares. CA_CERT and VAULT_CLI_VERSION come from the template;
+  # STAGING_URL, PROD_URL, BDD_SUITE_CMD, the .bdd install, VAULT_ROLE
+  # (promote) and CDN_PURGE_PRODUCT (cdn-purge) are set here.
+  - project: porter-valley-tech/porter-valley-infra
+    ref: main
+    file: ci-templates/product-deploy.yml
+
+# No runner tags anywhere: product jobs run on the brocco-k8s-runner, never
+# the infra shell pair (tier isolation is a security boundary). No kubectl,
+# no KUBE_* context, no cluster credentials in any job (ADR-0018).
+
+variables:
+  # The hugo-resume theme is a submodule - without this the build context
+  # arrives without layouts and Hugo emits a near-blank site.
+  GIT_SUBMODULE_STRATEGY: recursive
+  STAGING_URL: "https://williampoynter-co-uk.app.staging.psl.sheffield.exchange"
+  PROD_URL: "https://williampoynter.co.uk"
+  # This site installs with yarn, not bun (template header, BDD_SUITE_CMD).
+  # --retry 2 for the same mid-rollout reason the template gives.
+  BDD_SUITE_CMD: "npx cucumber-js --retry 2"
 
 validate-manifests:
   stage: test
@@ -60,39 +94,28 @@ publish-product-manifests:
 #                  Flux image automation deploys it to STAGING automatically via
 #                  the williampoynter-co-uk-staging ImagePolicy marker on
 #                  flux/deployment-staging.yaml. Prod is NOT touched: its image
-#                  line carries no marker.
+#                  line carries no marker. The build is this repo's job; the
+#                  template `needs:` it and reads TAG from build.env.
+#
+# The rest of the path comes from the product-deploy template (see the
+# include above and its header for every job, rule and WHY):
+#
 # verify-staging - poll until the canonical staging FQDN serves THIS pipeline's
-#                  tag (Dockerfile bakes it at /build-tag.txt), then run the
-#                  static-site checks.
-# promote        - manual gate (ADR-0018 amendment 2026-07-11). Writes the
-#                  staging-proven tag into flux/deployment.yaml as plain text
-#                  and pushes with [skip ci] - the promote commit triggers NO
-#                  pipeline. Prod advances only here.
-#
-# No kubectl, no KUBE_* context, no cluster credentials in any job (ADR-0018).
-# No runner tags: product jobs run on the brocco-k8s-runner, never the infra
-# shell pair (tier isolation is a security boundary).
-#
-# Each job's non-trivial logic lives in a named, single-purpose script under
-# ci/ (kaniko-login.sh, verify-staging.sh, promote.sh) instead of inline
-# heredoc bash - keeps this file to labelled setup/call steps and makes the
-# logic readable, shellcheck-able, and testable on its own. This is a
-# within-repo tidy, not a new shared platform mechanism: no cross-repo
-# template or custom CI image was introduced here (deliberately - the team
-# isn't generalising the ADR-0018 pattern across repos yet, see
-# feedback_no_premature_generalization).
-
-variables:
-  # The hugo-resume theme is a submodule - without this the build context
-  # arrives without layouts and Hugo emits a near-blank site.
-  GIT_SUBMODULE_STRATEGY: recursive
-  STAGING_URL: "https://williampoynter-co-uk.app.staging.psl.sheffield.exchange"
-  # The cluster trust bundle (public roots + the Porter Valley root),
-  # written by the trust-manager Bundle porter-valley-trust and mounted into
-  # every k8s-runner job pod at /etc/pv-trust (PLAT-464/466). Same root
-  # signs the vault-pki cert on the staging FQDN. No job installs a CA.
-  CA_CERT: "/etc/pv-trust/ca-certificates.crt"
-  VAULT_CLI_VERSION: "1.18.1"
+#                  tag (ci/verify-staging.sh; Dockerfile bakes it at
+#                  /build-tag.txt), then run the behaviour suite (features/)
+#                  against staging.
+# promote        - automatic once verify-staging is green: ci/promote.sh writes
+#                  the staging-proven tag into flux/deployment.yaml and pushes
+#                  with [skip ci]. Prod advances only here. Kill switch: the CI
+#                  variable PROMOTE_GATE=manual makes it (and cdn-purge) a
+#                  manual gate again.
+# verify-prod    - poll until the origin serves PROMOTED_TAG (ci/verify-prod.sh),
+#                  then run the behaviour suite against production.
+# cdn-purge      - automatic once verify-prod is green: empties the bunny.net
+#                  pull zone (ADR-0043 Decision 6, PLAT-497) so the edge
+#                  refetches the promoted build.
+# probe-prod     - the same suite against production, from a pipeline
+#                  schedule with PROBE=prod. A regression fails the pipeline.
 
 build:
   stage: build
@@ -105,6 +128,8 @@ build:
   script:
     # Sortable, immutable tag: master-<epoch>-<sha8>. The epoch makes tags
     # sort numerically so the staging ImagePolicy always picks the newest.
+    # The "master-" prefix is a contract with the ImagePolicy filterTags
+    # pattern in flux/image-automation.yaml, not a branch lookup.
     - export TAG="master-$(date +%s)-${CI_COMMIT_SHORT_SHA}"
     - export IMAGE_TAG="$CI_REGISTRY_IMAGE:${TAG}"
     # Hand the tag to verify-staging / promote via dotenv.
@@ -122,87 +147,36 @@ build:
       dotenv: build.env
     expire_in: 1 week
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 
-verify-staging:
-  stage: verify-staging
-  needs: ["build"]
-  image: alpine:3.20
-  timeout: 40m
-  script:
-    - apk add --no-cache curl
-    # Poll for the canonical staging FQDN to serve THIS pipeline's tag, then
-    # run the static-site checks - see ci/verify-staging.sh.
-    - sh ci/verify-staging.sh
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
+# The suite runner (template `.bdd`) installs with yarn here: GitLab merges
+# these keys over the template's, keeping its playwright image, whose tag
+# matches the playwright pin in package.json. yarn is installed only when
+# the image lacks it. pull-push, not the template's pull: no other job in
+# this pipeline installs node_modules, so the suite jobs fill the cache.
+.bdd:
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - node_modules/
+    policy: pull-push
+  before_script:
+    - command -v yarn >/dev/null 2>&1 || npm install -g yarn@1.22.22
+    - yarn install --frozen-lockfile
 
+# Per-site values of the template's jobs (its header lists them). The
+# Vault role is bound to this project and its protected refs; the purge
+# product is the name infra's cdn-purge job resolves to the pull zone of
+# williampoynter.co.uk (ADR-0043 Decision 6, PLAT-497).
 promote:
-  stage: promote
-  # Promotion is an explicit action (ADR-0018 amendment): when manual, set
-  # INSIDE the rule - GitLab rejects a job-level `when:` combined with
-  # `rules:` (pipeline fails at creation with zero jobs; learned on
-  # pipeline 411). allow_failure: false keeps the pipeline 'blocked'
-  # rather than 'passed' until promotion runs - an unpromoted build is
-  # visibly unfinished. Skipping promotion for a given build is fine; the
-  # next promotion supersedes it.
-  needs: ["build", "verify-staging"]
-  image: alpine:3.20
-  timeout: 15m
-  # Vault JWT auth - mirrors porter-valley-infra .gitlab/ci/templates.yml
-  # .vault-jwt-auth (no shared include mechanism exists for product repos;
-  # do NOT copy the networks repo's incompatible variant). aud must match
-  # bound_audiences on the Vault role and is deliberately NOT VAULT_ADDR.
-  id_tokens:
-    VAULT_ID_TOKEN:
-      aud: https://vault.svc.internal
   variables:
     VAULT_ROLE: "ci-williampoynter-co-uk-promote"
-    # Was `none`: the old inline script never touched the local checkout (it
-    # did its own explicit git clone into /tmp/promote). Now that the job's
-    # logic lives in ci/promote.sh, the runner needs a real checkout to find
-    # that file at all - `fetch` is the smallest strategy that still does one.
-    GIT_STRATEGY: fetch
-    # This job doesn't need the hugo-resume theme (it never builds the
-    # site), so skip the global recursive submodule fetch.
+    # This job never builds the site, so skip the global recursive
+    # submodule fetch of the hugo-resume theme.
     GIT_SUBMODULE_STRATEGY: none
-  script:
-    - apk add --no-cache curl unzip ca-certificates git
-    # Vault auth, staging health check, and the prod tag write + [skip ci]
-    # commit-back all live in ci/promote.sh.
-    - sh ci/promote.sh
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
-      when: manual
-      allow_failure: false
 
-# Purge-on-promote (ADR-0043 Decision 6, PLAT-497): empties the bunny.net
-# pull zone for williampoynter.co.uk so the edge refetches the promoted
-# build instead of serving the previous one for up to the envelope `ttl`
-# (1h). A bridge job, copied from word-cloud-plus `cdn-purge`: it starts a
-# porter-valley-infra main pipeline with CDN_PURGE_PRODUCT set, where
-# `cdn-purge` - the only job such a pipeline runs - reads the pull zone id
-# from tofu state and calls bunny's purge with the key this repo never
-# holds. `strategy: depend` mirrors its result here. `inherit: variables:
-# false`: only CDN_PURGE_PRODUCT crosses into infra.
-#
-# Manual on purpose. Operator flow: click promote, wait until prod serves
-# the promoted tag (`curl -s https://williampoynter.co.uk/build-tag.txt` -
-# bypassPaths, so it reads the origin, not the edge), THEN cdn-purge.
-# Clicked earlier, bunny may refetch the old build while Flux is still
-# rolling and hold it for up to an hour.
 cdn-purge:
-  stage: purge
-  needs: ["promote"]
-  inherit:
-    variables: false
   variables:
     CDN_PURGE_PRODUCT: williampoynter-co-uk
-  trigger:
-    project: porter-valley-tech/porter-valley-infra
-    branch: main
-    strategy: depend
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "master"'
-      when: manual
-      allow_failure: true

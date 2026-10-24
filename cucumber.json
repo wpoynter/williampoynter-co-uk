@@ -1,0 +1,8 @@
+{
+  "default": {
+    "import": ["features/support/**/*.js", "features/steps/**/*.js"],
+    "format": ["progress"],
+    "formatOptions": { "snippetInterface": "async-await" },
+    "strict": true
+  }
+}
