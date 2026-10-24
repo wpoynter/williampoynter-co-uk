@@ -27,7 +27,7 @@ spec:
         - name: registry-credentials
       containers:
         - name: web
-          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1792856563-73df9531 # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk-staging"}
+          image: registry.sheffield.exchange/porter-valley-tech/williampoynter-co-uk:master-1792879397-467f5991 # {"$imagepolicy": "williampoynter-co-uk:williampoynter-co-uk-staging"}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
