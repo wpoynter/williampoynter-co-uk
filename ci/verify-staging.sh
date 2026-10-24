@@ -1,8 +1,11 @@
 #!/bin/sh
-# Wait for the canonical staging FQDN to serve THIS pipeline's build tag,
-# then run the static-site checks. Needs STAGING_URL, CA_CERT, TAG in the
-# environment (TAG arrives via the build job's build.env dotenv artifact) -
-# see the verify-staging job in .gitlab-ci.yml.
+# Wait for the canonical staging FQDN to serve THIS pipeline's build tag.
+# The static-site checks that used to follow here (/, the home body,
+# /healthz, sitemap.xml) are now scenarios of the behaviour suite in
+# features/ (PLAT-763), which the verify-staging job runs once this script
+# returns. Needs STAGING_URL, CA_CERT, TAG in the environment (TAG arrives
+# via the build job's build.env dotenv artifact) - see the verify-staging
+# job of porter-valley-infra ci-templates/product-deploy.yml.
 set -eu
 
 # Worst-case pull-based latency: ImageRepository scan 1m + ImageUpdateAutomation
@@ -24,18 +27,9 @@ while :; do
   sleep 20
 done
 
-# Static-site checks. Each check retries for up to 2 minutes: the poll
-# above matches on the NEW pod's first response, which lands mid-rollout
-# (replicas 1 - the old pod is still terminating and endpoints flap
-# 404/503 for a few seconds; killed pipelines 418/424). grep WITHOUT
-# -q: under pipefail, grep -q exits at first match and curl dies on
-# EPIPE writing the rest of the body (exit 23).
-retry() { n=0; until "$@"; do n=$((n+1)); if [ "$n" -ge 24 ]; then echo "check failed after $n tries"; return 1; fi; sleep 5; done; }
-code() { curl -sS --cacert "$CA_CERT" -o /dev/null -w '%{http_code}' "$1"; }
-ok_root() { [ "$(code "$STAGING_URL/")" = "200" ]; }
-ok_body() { curl -fsS --cacert "$CA_CERT" "$STAGING_URL/" | grep -i "William Poynter" >/dev/null; }
-ok_health() { [ "$(code "$STAGING_URL/healthz")" = "200" ]; }
-ok_map() { curl -fsS --cacert "$CA_CERT" "$STAGING_URL/sitemap.xml" | grep "<urlset" >/dev/null; }
-
-retry ok_root && retry ok_body && retry ok_health && retry ok_map
-echo "all staging checks green"
+# The poll above matches on the NEW pod's first response, which lands
+# mid-rollout (replicas 1 - the old pod is still terminating and endpoints
+# flap 404/503 for a few seconds; killed pipelines 418/424). Give the
+# rollout a moment to settle; the suite itself retries a failed scenario
+# (--retry 2 in BDD_SUITE_CMD), which replaces the old per-check retry.
+sleep 10

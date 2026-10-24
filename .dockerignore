@@ -13,3 +13,5 @@ node_modules/
 !content/**/*.md
 !archetypes/**/*.md
 !themes/**/*.md
+features/
+cucumber.json

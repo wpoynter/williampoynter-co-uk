@@ -2,9 +2,17 @@
 # Vault-authenticates, confirms staging is healthy, then writes the
 # staging-proven tag into flux/deployment.yaml as plain text and pushes with
 # [skip ci] - prod (ADR-0018 amendment 2026-07-11) advances only here. Needs
-# CA_CERT, VAULT_CLI_VERSION, VAULT_ROLE, VAULT_ID_TOKEN, STAGING_URL, TAG in
-# the environment - see the promote job in .gitlab-ci.yml.
+# CA_CERT, VAULT_CLI_VERSION, VAULT_ROLE, VAULT_ID_TOKEN, STAGING_URL, TAG and
+# CI_DEFAULT_BRANCH in the environment - see the promote job of
+# porter-valley-infra ci-templates/product-deploy.yml. Hands the tag on to
+# verify-prod as PROMOTED_TAG in promote.env (dotenv artifact, PLAT-763).
 set -eu
+
+# promote.env first, before anything can fail or exit early: verify-prod
+# and cdn-purge `needs:` this artifact, and a missing dotenv fails them
+# before their own script runs. $CI_PROJECT_DIR because the clone below
+# cd's away from the checkout the artifact is collected from.
+echo "PROMOTED_TAG=${TAG}" > "${CI_PROJECT_DIR:-.}/promote.env"
 
 # TLS trust: CA_CERT is the cluster trust bundle the runner mounts; curl
 # reads it via --cacert below and the runner environment (CURL_CA_BUNDLE,
@@ -43,7 +51,7 @@ GIT_PASS="$(vault kv get -field=password secret/infrastructure/flux/git-write)"
 printf 'machine vcs.sheffield.exchange login %s password %s\n' "$GIT_USER" "$GIT_PASS" > ~/.netrc
 chmod 600 ~/.netrc
 
-git clone --depth 1 --branch master https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git /tmp/promote
+git clone --depth 1 --branch "${CI_DEFAULT_BRANCH}" https://vcs.sheffield.exchange/porter-valley-tech/williampoynter-co-uk.git /tmp/promote
 cd /tmp/promote
 
 # Plain-text tag write: prod's image line has NO $imagepolicy marker, so
@@ -55,6 +63,9 @@ cd /tmp/promote
 sed -i -E "s|(image: registry\.sheffield\.exchange/porter-valley-tech/williampoynter-co-uk:)[A-Za-z0-9._-]+|\1${TAG}|" flux/deployment.yaml
 grep -q "williampoynter-co-uk:${TAG}" flux/deployment.yaml
 
+# Early exit is still a success: promote.env already names the tag, so
+# verify-prod runs the suite against the prod that serves it (worth
+# verifying either way) and cdn-purge follows (a purge is harmless).
 if git diff --quiet -- flux/deployment.yaml; then
   echo "prod already runs ${TAG} - nothing to promote"
   exit 0
@@ -65,5 +76,5 @@ git config user.email "flux@sheffield.exchange"
 # [skip ci] is load-bearing: the promote commit must trigger NO pipeline
 # (ADR-0018 [skip ci] discipline is UNCHANGED by the PLAT-240 amendment).
 git commit -m "promote: williampoynter-co-uk ${TAG} to prod [skip ci]" -- flux/deployment.yaml
-git push origin HEAD:master
+git push origin HEAD:"${CI_DEFAULT_BRANCH}"
 echo "promoted ${TAG} to prod - Flux reconciles it within ~10m"
