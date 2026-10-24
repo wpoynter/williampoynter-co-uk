@@ -3,14 +3,16 @@
 Plain-language checks of what the live site does, one file per concern.
 They are read-only, so the same suite runs against a local static server,
 staging (where it gates production promotion), production right after
-promotion (`verify-prod`, which gates the CDN purge) and production on a
-schedule (`probe-prod`, as a health check). Lists of pages come from
+the CDN purge (`verify-live`) and production on a schedule (`probe-prod`,
+as a health check). Lists of pages come from
 `config.toml` and `content/` (features/support/content.js), never from
 copy, so the suite follows the content.
 
-In `verify-prod` (PROMOTED_TAG set) every request carries `?v=<tag>`:
-the suite runs before the CDN purge, and the query makes the bunny edge
-fetch the promoted build instead of serving the previous one from cache.
+Every request goes to the URL a visitor would use, with no cache-busting
+query: in CI the production run (`verify-live`, porter-valley-infra
+`ci-templates/product-deploy.yml`, PLAT-766) starts only after the CDN
+purge, so the bunny edge already serves the promoted build. A query here
+would hide a stale edge, which is what that run is there to catch.
 
 Scenarios tagged `@origin` need the real nginx image (health endpoint,
 build tag, trailing-slash redirects); `yarn bdd:local` leaves them out

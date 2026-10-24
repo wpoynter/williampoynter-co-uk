@@ -5,11 +5,12 @@
 # CA_CERT, VAULT_CLI_VERSION, VAULT_ROLE, VAULT_ID_TOKEN, STAGING_URL, TAG and
 # CI_DEFAULT_BRANCH in the environment - see the promote job of
 # porter-valley-infra ci-templates/product-deploy.yml. Hands the tag on to
-# verify-prod as PROMOTED_TAG in promote.env (dotenv artifact, PLAT-763).
+# verify-prod and verify-live as PROMOTED_TAG in promote.env (dotenv
+# artifact, PLAT-763).
 set -eu
 
 # promote.env first, before anything can fail or exit early: verify-prod
-# and cdn-purge `needs:` this artifact, and a missing dotenv fails them
+# and verify-live `needs:` this artifact, and a missing dotenv fails them
 # before their own script runs. $CI_PROJECT_DIR because the clone below
 # cd's away from the checkout the artifact is collected from.
 echo "PROMOTED_TAG=${TAG}" > "${CI_PROJECT_DIR:-.}/promote.env"
@@ -64,8 +65,8 @@ sed -i -E "s|(image: registry\.sheffield\.exchange/porter-valley-tech/williampoy
 grep -q "williampoynter-co-uk:${TAG}" flux/deployment.yaml
 
 # Early exit is still a success: promote.env already names the tag, so
-# verify-prod runs the suite against the prod that serves it (worth
-# verifying either way) and cdn-purge follows (a purge is harmless).
+# verify-prod confirms prod serves it, cdn-purge follows (a purge is
+# harmless) and verify-live runs the suite (worth verifying either way).
 if git diff --quiet -- flux/deployment.yaml; then
   echo "prod already runs ${TAG} - nothing to promote"
   exit 0

@@ -1,9 +1,10 @@
 # williampoynter-co-uk CI - ADR-0018 pull-based product image delivery. The
 # manifest checks and the Kaniko build live here; the deploy path
-# (verify-staging, promote, verify-prod, cdn-purge, probe-prod) is the
-# porter-valley-infra template ci-templates/product-deploy.yml (PLAT-763),
-# included below and parameterised by the variables this file sets. The
-# three scripts it calls stay in ci/ (template header, "option i").
+# (verify-staging, promote, verify-prod, cdn-purge, verify-live,
+# probe-prod) is the porter-valley-infra template
+# ci-templates/product-deploy.yml (PLAT-763, PLAT-766), included below and
+# parameterised by the variables this file sets. The three scripts it
+# calls stay in ci/ (template header, "option i").
 #
 # Belt-and-braces loop guard (pvt-gitlab-ci-authoring rule 7): the Flux
 # automation commit and the promote commit both carry [skip ci], which
@@ -116,11 +117,15 @@ publish-product-manifests:
 #                  with [skip ci]. Prod advances only here. Kill switch: the CI
 #                  variable PROMOTE_GATE=manual makes it (and cdn-purge) a
 #                  manual gate again.
-# verify-prod    - poll until the origin serves PROMOTED_TAG (ci/verify-prod.sh),
-#                  then run the behaviour suite against production.
+# verify-prod    - poll until the origin serves PROMOTED_TAG
+#                  (ci/verify-prod.sh). A wait only.
 # cdn-purge      - automatic once verify-prod is green: empties the bunny.net
 #                  pull zone (ADR-0043 Decision 6, PLAT-497) so the edge
-#                  refetches the promoted build.
+#                  refetches the promoted build. A failed purge fails the
+#                  pipeline (PLAT-766).
+# verify-live    - after the purge: the behaviour suite against production
+#                  through the edge, plain URLs as a visitor requests them
+#                  (PLAT-766; the old ?v=<tag> workaround in world.js is gone).
 # probe-prod     - the same suite against production, from a pipeline
 #                  schedule with PROBE=prod. A regression fails the pipeline.
 
