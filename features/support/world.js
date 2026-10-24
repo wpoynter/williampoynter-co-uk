@@ -12,6 +12,9 @@ export const baseURL = (process.env.BASE_URL || "http://localhost:3000").replace
 // request-level step against that CA, so the chain is checked on each run.
 const privateCA = Boolean(process.env.NODE_EXTRA_CA_CERTS);
 
+// See SiteWorld.url().
+const cacheBust = process.env.PROMOTED_TAG || "";
+
 // Whole-page steps iterate every public route; prod answers from the edge.
 setDefaultTimeout(120_000);
 
@@ -34,8 +37,16 @@ export class SiteWorld extends World {
     this.viewport = { width: 1280, height: 800 };
   }
 
+  // Every request the suite makes goes through here. verify-prod runs
+  // before cdn-purge (the purge waits for it), so the bunny edge may still
+  // hold the previous build's HTML and sitemap while the expectations come
+  // from this checkout: with PROMOTED_TAG set, a ?v=<tag> query - bunny
+  // caches per query string - makes the edge fetch the promoted build from
+  // the origin. The probe and local runs leave URLs as visitors see them.
   url(path) {
-    return /^https?:\/\//.test(path) ? path : `${this.baseURL}${path}`;
+    const url = new URL(/^https?:\/\//.test(path) ? path : `${this.baseURL}${path}`);
+    if (cacheBust) url.searchParams.set("v", cacheBust);
+    return url.href;
   }
 
   // Plain HTTP, no redirects followed: status and headers are the assertion.

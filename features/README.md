@@ -8,6 +8,10 @@ schedule (`probe-prod`, as a health check). Lists of pages come from
 `config.toml` and `content/` (features/support/content.js), never from
 copy, so the suite follows the content.
 
+In `verify-prod` (PROMOTED_TAG set) every request carries `?v=<tag>`:
+the suite runs before the CDN purge, and the query makes the bunny edge
+fetch the promoted build instead of serving the previous one from cache.
+
 Scenarios tagged `@origin` need the real nginx image (health endpoint,
 build tag, trailing-slash redirects); `yarn bdd:local` leaves them out
 when testing `yarn serve`. The site publishes no security.txt, so there

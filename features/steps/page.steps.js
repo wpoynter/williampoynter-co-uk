@@ -93,7 +93,7 @@ async function resolves(world, href) {
   if ([301, 302, 307, 308].includes(response.status())) {
     const next = new URL(response.headers().location || "", url);
     if (next.origin !== url.origin) return `${href} redirected off the origin to ${response.headers().location}`;
-    response = await world.api.get(next.href, { maxRedirects: 0 });
+    response = await world.api.get(world.url(next.href), { maxRedirects: 0 });
   }
   if (response.status() !== 200) return `${href} answered ${response.status()}`;
   const id = decodeURIComponent(url.hash.slice(1));

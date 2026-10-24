@@ -3,6 +3,8 @@
 # behaviour suite (features/) judges the promoted build and cdn-purge fires
 # only once the origin has it (ADR-0043 D6). /build-tag.txt is a bunny
 # bypass path: this reads the origin, while HTML pages come from the edge.
+# The edge is purged only after this job, so the suite adds ?v=$PROMOTED_TAG
+# to its requests (features/support/world.js) to read the promoted build.
 # Needs PROMOTED_TAG (the promote job's promote.env dotenv artifact) and
 # BASE_URL in the environment - see the verify-prod job of porter-valley-infra
 # ci-templates/product-deploy.yml.

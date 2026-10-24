@@ -58,6 +58,13 @@ variables:
 
 validate-manifests:
   stage: test
+  # Not in the probe-prod schedule pipeline (every 30 min): a red probe
+  # pipeline is the prod alert, and this job's github.com cue download and
+  # naming clone would page on their blips, not on prod health.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - when: on_success
   variables:
     NAMING_SCHEMA_REF: main
     MANIFESTS_DIR: manifest
