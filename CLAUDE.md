@@ -73,3 +73,12 @@ The site is **data-driven**, not page-driven - most homepage content comes from 
 - **New publication / blog post**: `hugo new publications/<slug>.md` (uses `archetypes/default.md`), then fill in `pubtype`, `featured`, `tags`, `link`, `image`, `description`. Drafts (`draft: true`) are excluded from production builds.
 - **Update resume body**: edit the relevant `data/*.json` - no template changes needed.
 - **Toggle a section on/off**: flip the corresponding `show*` flag under `[params]` in `config.toml`.
+
+## Agent copy class
+
+The infra agent harness (porter-valley-infra, ADR-0053, PLAT-772) may change this site's copy under the class `williampoynter-copy`, on `agent/plat-*` branches that merge into `master` like any other MR. The class line-up lives in porter-valley-infra `images/agent-runner/agent-classes.txt`; `agent-class-check` (included in `.gitlab-ci.yml`) holds the branch to it with the `copy` validator from infra main, and `site-build` + `site-suite` build the site and run the suite (`yarn bdd:local`) before the merge.
+
+- **May change**, existing files only (no new, deleted or renamed file): the prose of existing lines in `content/**/*.md`, the `title`, `description` and `alt` front-matter values, and `role`, `company`, `summary`, `school`, `degree`, `major` and `notes` in `data/experience.json` and `data/education.json`. At most 20 changed lines or values per file.
+- **ASCII**: a line or value you change must be entirely ASCII - straighten the curly quotes and en/em dashes on it (`'`, `"`, `-`). Add no non-ASCII character anywhere; leave untouched lines as they are.
+- **Frozen**: links (text and target), images, shortcodes, HTML, entities, code, emphasis, heading levels, list and quote markers, the line count and blank lines; the `---` fences and every other front-matter key byte for byte (`pubtype`, `featured`, `tags`, `link`, `image`, `date`, `draft`, `url`, `slug` and the rest - the suite and the layouts read them); `range` and the dates in the JSON files. No new URL, `www.`, `@` address or markup in changed text (Hugo's linkify would turn them into links).
+- **Out of the class**: `config.toml`, `data/skills.json` and `data/devicon.json` (Devicon lookup keys, not copy), `layouts/`, `static/`, `themes/`, `archetypes/`, `features/`, `flux/`, `manifest/`, `infra/`, `ci/`, `docker/`, `Dockerfile`, `.gitlab-ci.yml` and this file.

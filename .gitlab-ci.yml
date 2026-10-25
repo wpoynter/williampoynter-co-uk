@@ -34,6 +34,12 @@ include:
   - project: porter-valley-tech/naming
     ref: main
     file: ci-templates/validate-manifests.yml
+  # agent-class-check (porter-valley-infra ci-templates/, ADR-0053): runs
+  # only on the agent/plat-* branches the infra agent harness pushes here;
+  # the class table, library and copy gate come from infra main.
+  - project: porter-valley-tech/porter-valley-infra
+    ref: main
+    file: ci-templates/agent-class-check.yml
   # product-deploy (porter-valley-infra ci-templates/, PLAT-763): the
   # hands-off deploy shape every ADR-0018 site with a behaviour suite
   # shares. CA_CERT and VAULT_CLI_VERSION come from the template;
@@ -177,6 +183,54 @@ build:
   before_script:
     - command -v yarn >/dev/null 2>&1 || npm install -g yarn@1.22.22
     - yarn install --frozen-lockfile
+
+# Pre-merge site check (PLAT-772): `build` runs only on master pushes, so
+# without these jobs nothing builds Hugo before a merge. site-build is the
+# Dockerfile's Hugo step (same image, environment and command) and
+# site-suite runs the behaviour suite against that build exactly as
+# `yarn serve` + `yarn bdd:local` do (no @origin: there is no nginx here).
+# Merge request pipelines (the head pipeline "pipelines must succeed" and
+# the agent merge bot wait for) and the agent/plat-* branches the infra
+# agent harness pushes; never a master push or a schedule, which the
+# product-deploy template owns.
+site-build:
+  stage: test
+  image: hugomods/hugo:exts-0.125.4
+  needs: []
+  variables:
+    HUGO_ENVIRONMENT: production
+    HUGO_ENV: production
+    TZ: Europe/London
+  script:
+    - hugo --gc --minify
+  artifacts:
+    paths:
+      - public/
+    expire_in: 1 day
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^agent\/plat-[0-9]{1,6}-[0-9]+$/'
+
+site-suite:
+  extends: .bdd
+  stage: test
+  needs: ["site-build"]
+  timeout: 20m
+  variables:
+    # The suite reads config.toml and content/, never the theme.
+    GIT_SUBMODULE_STRATEGY: none
+  script:
+    - yarn serve > /tmp/serve.log 2>&1 &
+    - |
+      for i in $(seq 1 60); do
+        node -e 'fetch("http://localhost:3000/").then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))' && break
+        if [ "$i" = 60 ]; then cat /tmp/serve.log; exit 1; fi
+        sleep 1
+      done
+    - yarn bdd:local
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^agent\/plat-[0-9]{1,6}-[0-9]+$/'
 
 # Per-site values of the template's jobs (its header lists them). The
 # Vault role is bound to this project and its protected refs; the purge
