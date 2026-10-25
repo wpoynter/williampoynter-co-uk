@@ -36,7 +36,11 @@ include:
     file: ci-templates/validate-manifests.yml
   # agent-class-check (porter-valley-infra ci-templates/, ADR-0053): runs
   # only on the agent/plat-* branches the infra agent harness pushes here;
-  # the class table, library and copy gate come from infra main.
+  # the class table, library and copy gate come from infra main. This
+  # repo's default branch is master, so the template must fetch
+  # ${CI_DEFAULT_BRANCH} (the acl_repo_branch map, PLAT-772): a template
+  # that fetches refs/heads/main fails here before the check runs. Merge
+  # this include only once that template change is on infra main.
   - project: porter-valley-tech/porter-valley-infra
     ref: main
     file: ci-templates/agent-class-check.yml
