@@ -9,11 +9,11 @@
   },
   {
     "grouping": "AI & automation",
-    "skills": ["LLM application engineering", "Agent workflows", "LangGraph", "n8n", "Zapier"]
+    "skills": ["LLM application engineering", "Agent workflows", "LangGraph", "n8n", "Zapier", "Claude Code / agent skills"]
   },
   {
     "grouping": "Infrastructure & cloud",
-    "skills": ["Kubernetes", "Docker", "AWS", "Google Cloud", "OpenTofu", "Terraform", "Ansible", "Flux", "GitLab", "Pangolin", "Cloudflare", "Proxmox", "Ceph"]
+    "skills": ["Kubernetes", "Kubernetes (bare metal)", "Docker", "AWS", "Google Cloud", "OpenTofu", "Terraform", "Ansible", "Flux", "GitLab", "Pangolin", "Cloudflare", "Proxmox", "Ceph", "MikroTik"]
   },
   {
     "grouping": "Data",

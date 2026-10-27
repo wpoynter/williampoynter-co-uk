@@ -1,7 +1,7 @@
 [
   {
-    "role": "Founder",
-    "company": "Porter Valley Technology Company",
+    "role": "Founder & CTO",
+    "company": "[Porter Valley Technology Company](https://portervalley.tech/)",
     "summary": "Founded Porter Valley Tech as a UK sovereign technology company with the mission of delivering the next generation of the internet for families. Working solo so far, I have built the company and our cloud platform using modern IaC, CI/CD and DevSecOps practices to avoid the need for AWS, GCP or Azure.",
     "range": "Feb 2026 - Present"
   },

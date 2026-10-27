@@ -23,11 +23,17 @@ showPublications = true
 showTutorials = false
 showQr = false
 showSkills = true
-description = "The professional profile of William 'Will' Poynter. Including contact information, work experience, education and past publications."
+description = "Will Poynter is a technical consultant and founder of Porter Valley Technology Company, offering expert technical reviews and fractional CTO services. Specializing in infrastructure, AI strategy, and cloud-native solutions."
 
 [params.analytics.umami]
 # Non-secret website ID provisioned by porter-valley-infra/scripts/bootstrap-umami.sh.
 websiteID = "1068a319-76a6-42b1-a946-564122ff9b03"
+
+[[params.handles]]
+link = "https://portervalley.tech/"
+name = "Porter Valley Tech"
+icon = "globe"
+solid = true
 
 [[params.handles]]
 link = "https://www.linkedin.com/in/will-poynter-3aa34416/"

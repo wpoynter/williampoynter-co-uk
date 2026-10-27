@@ -20,6 +20,7 @@
         </div>
         <div>
           {{ .Content }}
+          {{ partial "available-for.html" . }}
           <ul class="list-inline list-social-icons mb-0">
             {{ range .Site.Params.handles }}
                 <li class="list-inline-item">

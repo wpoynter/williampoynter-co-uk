@@ -1,0 +1,12 @@
+{{ $endDate := "2026-12-31" }}
+{{ $today := now }}
+{{ $end := $endDate | time.Date }}
+
+{{ if lt $today $end }}
+<div class="alert alert-info text-center" role="alert" style="margin-top: 1rem; margin-bottom: 1rem;">
+  Currently taking a small number of Technical Reviews and Fractional CTO engagements before 
+  <a href="https://portervalley.tech/how-we-work/" target="_blank" rel="noopener noreferrer">Technical Reviews</a> and 
+  <a href="https://portervalley.tech/how-we-work/" target="_blank" rel="noopener noreferrer">Fractional CTO</a> engagements 
+  before Christmas 2026 through <a href="https://portervalley.tech/" target="_blank" rel="noopener noreferrer">Porter Valley Tech</a>.
+</div>
+{{ end }}
